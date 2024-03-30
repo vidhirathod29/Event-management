@@ -8,10 +8,10 @@ let statusToSet = 400;
 const handleErrors = (err, req, res, next) => {
   if (err instanceof GeneralError) {
     return res
-      .status(err.statusCode !== '' ? err.statusCode : err.getCode())
+      .status(err.StatusCodes !== '' ? err.StatusCodes : err.getCode())
       .json({
         message: err.message,
-        code: err.statusCode !== '' ? err.statusCode : err.getCode(),
+        code: err.StatusCodes !== '' ? err.StatusCodes : err.getCode(),
         result: err.result !== '' ? err.data : undefined,
         status: err.status,
       });
@@ -19,12 +19,13 @@ const handleErrors = (err, req, res, next) => {
   return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
     status: err.status,
     code:
-      err.statusCode !== ''
-        ? err.statusCode
+      err.StatusCodes !== ''
+        ? err.StatusCodes
         : StatusCodes.INTERNAL_SERVER_ERROR,
     message: err.message,
   });
 };
+
 const handleJoiErrors = (err, req, res, next) => {
   if (err && err.error && err.error.isJoi) {
     logger.error(err.error);
@@ -49,6 +50,7 @@ const handleJoiErrors = (err, req, res, next) => {
     next(err);
   }
 };
+
 const errorHandler = (check) => {
   return async (req, res, next) => {
     try {
