@@ -17,13 +17,5 @@ module.exports = {
     UPDATE_DATA_SUCCESS:'Data updated successfully',
     GET_SUCCESS:'Getting successfully',
     UPDATE_DATA_FAIL:'Failed to update data',
-    RESET_PASS_SUCCESS:'Password changed successfully',
-    INVALID_OLD_PASS:'Invalid old password',
-    OTP_SENT_SUCCESS:'Otp sent successfully',
-    OTP_GENERATE_FAIL:'Failed to generate otp',
-    OTP_EXPIRE:'Otp is expired',
-    INVALID_OTP:'Please enter a valid otp',
-    PASS_UPDATE_SUCCESS:'Password updated successfully',
-    OTP_ALREADY_SENT:'Otp is already sent ',
   },
 };

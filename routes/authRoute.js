@@ -30,19 +30,4 @@ router.get(
   errorHandler(controller.viewProfile),
 );
 
-router.put(
-  '/changePassword',
-  validator.body(validate.resetPassword),
-  authentication,
-  errorHandler(controller.resetPassword),
-);
-
-router.post('/verifyEmail', errorHandler(controller.verifyEmail));
-
-router.put(
-  '/updatePassword',
-  validator.body(validate.updatePassword),
-  controller.updatePassword,
-);
-
 module.exports = router;
