@@ -25,6 +25,7 @@ const handleErrors = (err, req, res, next) => {
     message: err.message,
   });
 };
+
 const handleJoiErrors = (err, req, res, next) => {
   if (err && err.error && err.error.isJoi) {
     logger.error(err.error);
@@ -49,6 +50,7 @@ const handleJoiErrors = (err, req, res, next) => {
     next(err);
   }
 };
+
 const errorHandler = (check) => {
   return async (req, res, next) => {
     try {
