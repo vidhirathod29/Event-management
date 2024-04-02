@@ -23,6 +23,7 @@ module.exports = {
     OTP_GENERATE_FAIL:'Failed to generate otp',
     OTP_EXPIRE:'Otp is expired',
     INVALID_OTP:'Please enter a valid otp',
-    PASS_UPDATE_SUCCESS:'Password updated successfully'
+    PASS_UPDATE_SUCCESS:'Password updated successfully',
+    OTP_ALREADY_SENT:'Otp is already sent ',
   },
 };

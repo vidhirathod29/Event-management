@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const { GeneralError } = require('../utils/error');
-const StatusCodes = require('../utils/Http-Status');
+const StatusCodes = require('http-status-codes');
 const { RESPONSE_STATUS } = require('../utils/enum');
 const { Messages } = require('../utils/messages');
 

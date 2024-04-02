@@ -13,7 +13,9 @@ router.post(
   validator.body(validate.registration),
   errorHandler(controller.registration),
 );
+
 router.post('/login', validator.body(validate.login), controller.login);
+
 router.put(
   '/editProfile',
   upload.single('profile_image'),
@@ -21,10 +23,26 @@ router.put(
   authentication,
   errorHandler(controller.updateProfile),
 );
+
 router.get(
   '/viewProfile',
   authentication,
   errorHandler(controller.viewProfile),
+);
+
+router.put(
+  '/changePassword',
+  validator.body(validate.resetPassword),
+  authentication,
+  errorHandler(controller.resetPassword),
+);
+
+router.post('/verifyEmail', errorHandler(controller.verifyEmail));
+
+router.put(
+  '/updatePassword',
+  validator.body(validate.updatePassword),
+  controller.updatePassword,
 );
 
 module.exports = router;
