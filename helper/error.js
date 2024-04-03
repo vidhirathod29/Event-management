@@ -8,10 +8,10 @@ let statusToSet = 400;
 const handleErrors = (err, req, res, next) => {
   if (err instanceof GeneralError) {
     return res
-      .status(err.StatusCodes !== '' ? err.StatusCodes : err.getCode())
+      .status(err.statusCode !== '' ? err.statusCode : err.getCode())
       .json({
         message: err.message,
-        code: err.StatusCodes !== '' ? err.StatusCodes : err.getCode(),
+        code: err.statusCode !== '' ? err.statusCode : err.getCode(),
         result: err.result !== '' ? err.data : undefined,
         status: err.status,
       });
@@ -19,8 +19,8 @@ const handleErrors = (err, req, res, next) => {
   return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
     status: err.status,
     code:
-      err.StatusCodes !== ''
-        ? err.StatusCodes
+      err.statusCode !== ''
+        ? err.statusCode
         : StatusCodes.INTERNAL_SERVER_ERROR,
     message: err.message,
   });
