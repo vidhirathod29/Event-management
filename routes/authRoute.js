@@ -1,23 +1,29 @@
 const express = require('express');
 const router = express.Router();
-const upload = require('../middleware/multer');
-const controller = require('../controller/authController');
+const {
+  resetPassword,
+  verifyEmail,
+  updatePassword,
+} = require('../controller/authController');
 const { errorHandler } = require('../helper/error');
 const { validator } = require('../validation/validator');
 const validate = require('../validation/authValidation');
-const { authentication } = require('../middleware/authentication');
+const { authorization } = require('../middleware/authentication');
+const { ROLES } = require('../utils/enum');
 
 router.put(
   '/changePassword',
+  authorization([ROLES.ADMIN, ROLES.ORGANIZATION, ROLES.USER]),
   validator.body(validate.resetPassword),
-  authentication,
-  errorHandler(controller.resetPassword),
+  errorHandler(resetPassword),
 );
-router.post('/verifyEmail', errorHandler(controller.verifyEmail));
+
+router.post('/verifyEmail', errorHandler(verifyEmail));
+
 router.put(
   '/updatePassword',
   validator.body(validate.updatePassword),
-  controller.updatePassword,
+  errorHandler(updatePassword),
 );
 
 module.exports = router;

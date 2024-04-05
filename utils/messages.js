@@ -1,5 +1,7 @@
 module.exports = {
   Messages: {
+    DATABASE_CONNECTION: 'Database connected successfully',
+    NO_DATABASE_CONNECTION: 'Could not connect to the database',
     SOMETHING_WENT_WRONG: 'Something went wrong',
     SERVER_ERROR: 'Internal server error',
     INCORRECT_CREDENTIAL: 'Incorrect username or password',
