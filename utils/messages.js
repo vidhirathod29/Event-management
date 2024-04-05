@@ -1,6 +1,5 @@
 module.exports = {
   Messages: {
-    
     SOMETHING_WENT_WRONG: 'Something went wrong',
     NOT_FOUND: 'not found',
     ALREADY_EXIST: 'already exist',
@@ -13,8 +12,10 @@ module.exports = {
     TOKEN_VERIFY_FAILED: 'Token verification failed',
     TOKEN_EXPIRED: 'Token expired',
     NO_VALID_FIELDS: 'No valid fields provided',
-    UPDATE_DATA_SUCCESS:'Data updated successfully',
-    GET_SUCCESS:'Getting successfully',
-    FAILED_TO:'Failed to ',
+    UPDATE_DATA_SUCCESS: 'Data updated successfully',
+    GET_SUCCESS: 'Getting successfully',
+    FAILED_TO: 'Failed to ',
+    DATABASE_CONNECTION: 'Database connected successfully',
+    NO_DATABASE_CONNECTION: 'Could not connect to the database',
   },
 };

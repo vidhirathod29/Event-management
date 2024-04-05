@@ -1,15 +1,15 @@
-const winston = require("winston");
+const winston = require('winston');
 
 const options = {
   file: {
-    level: "info",
-    filename: "./logs/app.log",
+    level: 'info',
+    filename: './logs/app.log',
     handleExceptions: true,
     json: true,
     colorize: false,
   },
   console: {
-    level: "debug",
+    level: 'debug',
     handleExceptions: true,
     json: false,
     colorize: true,

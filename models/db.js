@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
-require('./auth')
+const { Messages } = require('../utils/messages');
+
 mongoose
   .connect('mongodb://localhost:27017/event-management')
-  .then(() => console.log('Connected to MongoDB server successfully..'))
-  .catch((err) => console.error('Could not connect to the server ', err));
+  .then(() => console.log(`${Messages.DATABASE_CONNECTION}`))
+  .catch((err) => console.error(`${Messages.NO_DATABASE_CONNECTION}`, err));
