@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { ROLES, STATUS } = require('../utils/enum');
 
 const auth = new mongoose.Schema({
   name: {
@@ -18,11 +19,11 @@ const auth = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['active', 'deactivate'],
+    enum: [ROLES.ADMIN, ROLES.ORGANIZATION, ROLES.USER],
   },
   role: {
     type: String,
-    enum: ['user', 'admin', 'organization'],
+    enum: [STATUS.ACTIVE, STATUS.DEACTIVATE],
   },
   created_at: {
     type: Date,

@@ -6,12 +6,14 @@ const { Messages } = require('../utils/messages');
 const { GeneralError } = require('../utils/error');
 const { generateToken } = require('../middleware/authentication');
 const bcrypt = require('bcrypt');
+const logger = require('../logger/logger');
 
 const registration = async (req, res, next) => {
   const { name, email, phoneNumber, status, role } = req.body;
   const existingUser = await authModel.findOne({ email: req.body.email });
 
   if (existingUser) {
+    logger.error(`User ${Messages.ALREADY_EXIST}`);
     next(
       new GeneralError(
         `User ${Messages.ALREADY_EXIST}`,
@@ -23,6 +25,7 @@ const registration = async (req, res, next) => {
   }
 
   if (!req.file) {
+    logger.error(Messages.IMAGE_NOT_FOUND);
     next(
       new GeneralError(
         Messages.IMAGE_NOT_FOUND,
@@ -40,7 +43,7 @@ const registration = async (req, res, next) => {
     name,
     email,
     password: hashPassword,
-    phone_number:phoneNumber,
+    phone_number: phoneNumber,
     profile_image: req.file.filename,
     status,
     role,
@@ -49,6 +52,7 @@ const registration = async (req, res, next) => {
   const user = await newUser.save();
 
   if (user) {
+    logger.info(Messages.REGISTER_SUCCESS);
     next(
       new GeneralResponse(
         Messages.REGISTER_SUCCESS,
@@ -58,6 +62,7 @@ const registration = async (req, res, next) => {
       ),
     );
   }
+  logger.error(Messages.SOMETHING_WENT_WRONG);
   next(
     new GeneralError(
       Messages.SOMETHING_WENT_WRONG,
@@ -73,6 +78,7 @@ const login = async (req, res, next) => {
   const user = await authModel.findOne({ email });
 
   if (!user) {
+    logger.error(Messages.USER_NOT_FOUND);
     next(
       new GeneralError(
         Messages.USER_NOT_FOUND,
@@ -87,6 +93,7 @@ const login = async (req, res, next) => {
 
   if (comparePassword) {
     let token = generateToken({ email, password });
+    logger.info(Messages.LOGIN_SUCCESS);
     next(
       new GeneralError(
         Messages.LOGIN_SUCCESS,
@@ -96,6 +103,7 @@ const login = async (req, res, next) => {
       ),
     );
   }
+  logger.error(Messages.INCORRECT_CREDENTIAL);
   next(
     new GeneralError(
       Messages.INCORRECT_CREDENTIAL,
@@ -126,6 +134,7 @@ const updateProfile = async (req, res, next) => {
     }
 
     if (!req.body && !req.file) {
+      logger.error(Messages.NO_VALID_FIELDS);
       next(
         new GeneralError(
           Messages.NO_VALID_FIELDS,
@@ -142,6 +151,7 @@ const updateProfile = async (req, res, next) => {
     );
 
     if (updatedData) {
+      logger.info(Messages.UPDATE_DATA_SUCCESS);
       next(
         new GeneralResponse(
           Messages.UPDATE_DATA_SUCCESS,
@@ -151,6 +161,7 @@ const updateProfile = async (req, res, next) => {
         ),
       );
     }
+    logger.error(`${Messages.FAILED_TO} update profile`);
     next(
       new GeneralError(
         `${Messages.FAILED_TO} update profile`,
@@ -159,8 +170,8 @@ const updateProfile = async (req, res, next) => {
         RESPONSE_STATUS.ERROR,
       ),
     );
-
   } else {
+    logger.error(Messages.USER_NOT_FOUND);
     next(
       new GeneralError(
         Messages.USER_NOT_FOUND,
@@ -177,6 +188,7 @@ const viewProfile = async (req, res, next) => {
   const user = await authModel.findOne({ email: email });
 
   if (user) {
+    logger.info(`User data get successfully`);
     next(
       new GeneralError(
         undefined,
@@ -186,6 +198,7 @@ const viewProfile = async (req, res, next) => {
       ),
     );
   }
+  logger.error(Messages.USER_NOT_FOUND);
   next(
     new GeneralError(
       Messages.USER_NOT_FOUND,
