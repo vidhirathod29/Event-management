@@ -10,7 +10,8 @@ const {
 const { errorHandler } = require('../helper/error');
 const { validator } = require('../validation/validator');
 const validate = require('../validation/authValidation');
-const { authentication } = require('../middleware/authentication');
+const { authorization } = require('../middleware/authentication');
+const { ROLES } = require('../utils/enum');
 
 router.post(
   '/registration',
@@ -23,12 +24,16 @@ router.post('/login', validator.body(validate.login), errorHandler(login));
 
 router.put(
   '/editProfile',
-  authentication,
+  authorization([ROLES.ADMIN, ROLES.ORGANIZATION]),
   upload.single('profile_image'),
   validator.body(validate.update),
   errorHandler(updateProfile),
 );
 
-router.get('/viewProfile', authentication, errorHandler(viewProfile));
+router.get(
+  '/viewProfile',
+  authorization([ROLES.ADMIN, ROLES.ORGANIZATION]),
+  errorHandler(viewProfile),
+);
 
 module.exports = router;

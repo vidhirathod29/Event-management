@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const { GeneralError } = require('../utils/error');
-const StatusCodes = require('http-status-codes');
+const { StatusCodes } = require('http-status-codes');
 const { RESPONSE_STATUS } = require('../utils/enum');
 const { Messages } = require('../utils/messages');
 
@@ -12,50 +12,50 @@ const generateToken = (req) => {
   return token;
 };
 
-const authentication = (req, res, next) => {
-  try {
-    const authHeader = req.headers.authorization;
-    if (authHeader) {
-      const token = authHeader.split(' ')[1];
-      if (token == null) {
+const authorization = (roles) => {
+  return (req, res, next) => {
+    try {
+      const token = req.header('Authorization');
+
+      if (!token) {
         next(
           new GeneralError(
             Messages.TOKEN_VERIFY_FAILED,
-            undefined,
             StatusCodes.UNAUTHORIZED,
+            undefined,
             RESPONSE_STATUS.ERROR,
           ),
         );
       }
-      jwt.verify(token, process.env.PRIVATE_KEY, (err, user) => {
-        if (err) {
-          logger.error(err);
-          next(
-            new GeneralError(
-              Messages.TOKEN_EXPIRED,
-              undefined,
-              StatusCodes.FORBIDDEN,
-              RESPONSE_STATUS.ERROR,
-            ),
-          );
-        }
-        req.user = user;
+      const verified = jwt.verify(token, process.env.PRIVATE_KEY);
+      req.user = verified;
+
+      if (roles.length > 0 && roles.some((role) => role === verified.role)) {
         next();
-      });
+      } else {
+        next(
+          new GeneralError(
+            Messages.USER_UNAUTHORIZED,
+            StatusCodes.UNAUTHORIZED,
+            undefined,
+            RESPONSE_STATUS.ERROR,
+          ),
+        );
+      }
+    } catch (err) {
+      next(
+        new GeneralError(
+          Messages.INTERNAL_SERVER_ERROR,
+          StatusCodes.INTERNAL_SERVER_ERROR,
+          undefined,
+          RESPONSE_STATUS.ERROR,
+        ),
+      );
     }
-  } catch (error) {
-    next(
-      new GeneralError(
-        `${Messages.SOMETHING_WENT_WRONG} while authentication..`,
-        StatusCodes.SOMETHING_WENT_WRONG,
-        undefined,
-        RESPONSE_STATUS.ERROR,
-      ),
-    );
-  }
+  };
 };
 
 module.exports = {
   generateToken,
-  authentication,
+  authorization,
 };
