@@ -8,7 +8,7 @@ const { generateToken } = require('../middleware/authentication');
 const bcrypt = require('bcrypt');
 
 const registration = async (req, res, next) => {
-  const { name, email, phone_number, status, role } = req.body;
+  const { name, email, phoneNumber, status, role } = req.body;
   const existingUser = await authModel.findOne({ email: req.body.email });
 
   if (existingUser) {
@@ -40,7 +40,7 @@ const registration = async (req, res, next) => {
     name,
     email,
     password: hashPassword,
-    phone_number,
+    phone_number:phoneNumber,
     profile_image: req.file.filename,
     status,
     role,
@@ -111,11 +111,11 @@ const updateProfile = async (req, res, next) => {
   const user = await authModel.findOne({ email: userEmail });
 
   if (user) {
-    const { name, email, phone_number, status, role } = req.body;
+    const { name, email, phoneNumber, status, role } = req.body;
     const updateData = {
       name,
       email,
-      phone_number,
+      phoneNumber,
       status,
       role,
     };
