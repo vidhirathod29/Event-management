@@ -19,11 +19,11 @@ const auth = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: [ROLES.ADMIN,ROLES.ORGANIZATION,ROLES.USER],
+    enum: [STATUS.ACTIVE,STATUS.DEACTIVATE],
   },
   role: {
     type: String,
-    enum: [STATUS.ACTIVE,STATUS.DEACTIVATE],
+    enum: [ROLES.ADMIN,ROLES.ORGANIZATION,ROLES.USER],
   },
   created_at: {
     type: Date,
