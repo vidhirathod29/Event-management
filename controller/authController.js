@@ -7,6 +7,7 @@ const { Messages } = require('../utils/messages');
 const { GeneralError } = require('../utils/error');
 const bcrypt = require('bcrypt');
 const moment = require('moment');
+const logger = require('../logger/logger');
 
 const resetPassword = async (req, res, next) => {
   const email = req.user.email;
@@ -14,6 +15,7 @@ const resetPassword = async (req, res, next) => {
   const { oldPassword, newPassword } = req.body;
 
   if (!user) {
+    logger.error(Messages.USER_NOT_FOUND);
     next(
       new GeneralError(
         Messages.USER_NOT_FOUND,
@@ -34,6 +36,7 @@ const resetPassword = async (req, res, next) => {
     );
 
     if (resetPassword) {
+      logger.info(Messages.RESET_PASS_SUCCESS);
       next(
         new GeneralResponse(
           Messages.RESET_PASS_SUCCESS,
@@ -43,6 +46,7 @@ const resetPassword = async (req, res, next) => {
         ),
       );
     }
+    logger.error(Messages.SOMETHING_WENT_WRONG);
     next(
       new GeneralError(
         Messages.SOMETHING_WENT_WRONG,
@@ -52,6 +56,7 @@ const resetPassword = async (req, res, next) => {
       ),
     );
   } else {
+    logger.error(Messages.INVALID_OLD_PASS);
     next(
       new GeneralError(
         Messages.INVALID_OLD_PASS,
@@ -68,6 +73,7 @@ const verifyEmail = async (req, res, next) => {
   const user = await authModel.findOne({ email: email });
 
   if (!user) {
+    logger.error(Messages.USER_NOT_FOUND);
     next(
       new GeneralError(
         Messages.USER_NOT_FOUND,
@@ -90,6 +96,7 @@ const verifyEmail = async (req, res, next) => {
   sendOtp(email, otp);
 
   if (!newOtp) {
+    logger.error(Messages.OTP_GENERATE_FAIL);
     next(
       new GeneralError(
         Messages.OTP_GENERATE_FAIL,
@@ -99,6 +106,7 @@ const verifyEmail = async (req, res, next) => {
       ),
     );
   }
+  logger.info(Messages.OTP_SENT_SUCCESS);
   next(
     new GeneralError(
       Messages.OTP_SENT_SUCCESS,
@@ -121,6 +129,7 @@ const updatePassword = async (req, res, next) => {
     const otpValidTime = moment(findOtp.expireTime).format('x');
 
     if (otpValidTime <= currentTime) {
+      logger.error(Messages.OTP_EXPIRE);
       next(
         new GeneralError(
           Messages.OTP_EXPIRE,
@@ -138,8 +147,9 @@ const updatePassword = async (req, res, next) => {
     });
 
     if (updatedPassword) {
-      const deleteOtp = await otpModel.deleteOne({ otp });
-      logger.log('Deleted Otp', deleteOtp);
+      await otpModel.deleteOne({ otp });
+
+      logger.info(Messages.PASS_UPDATE_SUCCESS);
       next(
         new GeneralResponse(
           Messages.PASS_UPDATE_SUCCESS,
@@ -148,30 +158,30 @@ const updatePassword = async (req, res, next) => {
           RESPONSE_STATUS.SUCCESS,
         ),
       );
-      next(
-        new GeneralError(
-          Messages.SOMETHING_WENT_WRONG,
-          StatusCodes.BAD_REQUEST,
-          undefined,
-          RESPONSE_STATUS.ERROR,
-        ),
-      );
-    
-  } else {
+    }
+    logger.error(Messages.SOMETHING_WENT_WRONG);
     next(
       new GeneralError(
-        Messages.INVALID_OTP,
+        Messages.SOMETHING_WENT_WRONG,
         StatusCodes.BAD_REQUEST,
         undefined,
         RESPONSE_STATUS.ERROR,
       ),
     );
   }
+  logger.error(Messages.INVALID_OTP);
+  next(
+    new GeneralError(
+      Messages.INVALID_OTP,
+      StatusCodes.BAD_REQUEST,
+      undefined,
+      RESPONSE_STATUS.ERROR,
+    ),
+  );
 };
-}
 
 module.exports = {
   resetPassword,
   verifyEmail,
-  updatePassword
-}
+  updatePassword,
+};

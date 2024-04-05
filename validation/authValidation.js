@@ -33,15 +33,23 @@ module.exports = {
         'string.pattern.base': `New password must include at least one uppercase letter, one lowercase letter, one digit, and one special character`,
       }),
     confirmPassword: Joi.valid(Joi.ref('newPassword')).empty().messages({
-      'any.only': `confirmPassword and new password should be same`,
-      'string.empty': `"confirmPassword should not be empty`,
+      'string.base': `Confirm password should contain at least 1 uppercase,1 lowercase,1 digit`,
+      'any.only': `Confirm password and new password should be same`,
+      'string.empty': `"Confirm password should not be empty`,
     }),
   }),
+
   updatePassword: Joi.object({
-    email: Joi.string().min(11).max(50).empty().email().messages({
-      'string.empty': `email cannot be an empty field`,
-      'any.required': `email is a required field`,
-    }),
+    email: Joi.string()
+      .min(11)
+      .max(50)
+      .empty()
+      .pattern(/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,4}$/)
+      .messages({
+        'string.empty': `Email cannot be an empty field`,
+        'string.pattern.base': `Email should be in proper formate`,
+        'any.required': `Email is a required field`,
+      }),
     otp: Joi.string().min(6).max(50).empty().messages({
       'string.empty': `Otp cannot be an empty field`,
       'string.min': `Otp should contain 6 digits`,
@@ -63,8 +71,9 @@ module.exports = {
         'string.pattern.base': `New password must include at least one uppercase letter, one lowercase letter, one digit, and one special character`,
       }),
     confirmPassword: Joi.valid(Joi.ref('newPassword')).empty().messages({
-      'any.only': `confirmPassword and new password should be same`,
-      'string.empty': `"confirmPassword should not be empty`,
+      'string.base': `Confirm password should contain at least 1 uppercase,1 lowercase,1 digit`,
+      'any.only': `Confirm password and new password should be same`,
+      'string.empty': `"Confirm password should not be empty`,
     }),
   }),
 };
