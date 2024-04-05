@@ -1,9 +1,8 @@
 module.exports = {
   Messages: {
-    ALREADY_REGISTERED: 'already registered',
+    
     SOMETHING_WENT_WRONG: 'Something went wrong',
     NOT_FOUND: 'not found',
-    ADD_SUCCESS: 'added successfully',
     ALREADY_EXIST: 'already exist',
     IMAGE_NOT_FOUND: 'Image not found',
     SERVER_ERROR: 'Internal server error',
@@ -16,6 +15,6 @@ module.exports = {
     NO_VALID_FIELDS: 'No valid fields provided',
     UPDATE_DATA_SUCCESS:'Data updated successfully',
     GET_SUCCESS:'Getting successfully',
-    UPDATE_DATA_FAIL:'Failed to update data',
+    FAILED_TO:'Failed to ',
   },
 };

@@ -3,4 +3,15 @@ module.exports = {
     SUCCESS: 'Success',
     ERROR: 'Error',
   },
+
+  ROLES: {
+    ADMIN: 'admin',
+    ORGANIZATION: 'organization',
+    USER: 'user',
+  },
+
+  STATUS: {
+    ACTIVE: 'active',
+    DEACTIVATE: 'deactivate',
+  },
 };

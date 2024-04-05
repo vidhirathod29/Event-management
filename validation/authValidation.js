@@ -8,11 +8,17 @@ module.exports = {
       'string.min': `name should have a minimum length of 3`,
       'any.required': `name is a required field`,
     }),
-
-    email: Joi.string().min(11).max(50).required().empty().email().messages({
-      'string.empty': `email cannot be an empty field`,
-      'any.required': `email is a required field`,
-    }),
+    email: Joi.string()
+      .min(11)
+      .max(50)
+      .required()
+      .empty()
+      .pattern(/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,4}$/)
+      .messages({
+        'string.empty': `email cannot be an empty field`,
+        'string.pattern.base"': `Email should be in proper formate`,
+        'any.required': `email is a required field`,
+      }),
     password: Joi.string()
       .min(8)
       .pattern(
@@ -80,10 +86,18 @@ module.exports = {
       'string.min': `name should have a minimum length of 3`,
       'any.required': `name is a required field`,
     }),
-    email: Joi.string().min(11).max(50).empty().email().messages({
-      'string.empty': `email cannot be an empty field`,
-      'any.required': `email is a required field`,
-    }),
+    email: Joi.string()
+      .min(11)
+      .max(50)
+      .empty()
+      .pattern(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@#$!%*?&]{8,}$/,
+      )
+      .messages({
+        'string.empty': `email cannot be an empty field`,
+        'string.pattern.base"': `Email should be in proper formate`, 
+        'any.required': `email is a required field`,
+      }),
     phone_number: Joi.string().empty().messages({
       'any.required': `Phone number is a required field`,
       'string.empty': `Phone number should not be empty`,
@@ -95,10 +109,6 @@ module.exports = {
     status: Joi.string().empty().messages({
       'any.required': `status is a required field`,
       'string.empty': `status should not be empty`,
-    }),
-    role: Joi.string().empty().messages({
-      'any.required': `role is a required field`,
-      'string.empty': `role should not be empty`,
     }),
   }),
 };
