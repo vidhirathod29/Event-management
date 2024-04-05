@@ -1,10 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const controller = require('../controller/addressController');
+const {
+  listOfCountry,
+  listOfState,
+  listOfCity,
+} = require('../controller/addressController');
 const { errorHandler } = require('../helper/error');
 
-router.get('/listOfCountry',errorHandler(controller.listOfCountry));
-router.get('/listOfState',errorHandler(controller.listOfState));
-router.get('/listOfCity',errorHandler(controller.listOfCity));
+router.get('/listOfCountry', errorHandler(listOfCountry));
+router.get('/listOfState', errorHandler(listOfState));
+router.get('/listOfCity', errorHandler(listOfCity));
 
-module.exports= router;
+module.exports = router;

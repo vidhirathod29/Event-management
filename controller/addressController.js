@@ -5,29 +5,31 @@ const { StatusCodes } = require('http-status-codes');
 const { RESPONSE_STATUS } = require('../utils/enum');
 const { Messages } = require('../utils/messages');
 const { GeneralError } = require('../utils/error');
+const logger = require('../logger/logger');
 
 const listOfCountry = async (req, res, next) => {
   const country = await countryModel.find({});
 
   if (country.length > 0) {
+    logger.info(Messages.COUNTRY_GET_SUCCESS);
     next(
       new GeneralError(
-        Messages.COUNTRY_GET_SUCCESS,
+        undefined,
         StatusCodes.OK,
         country,
         RESPONSE_STATUS.SUCCESS,
       ),
     );
-  } else {
-    next(
-      new GeneralError(
-        Messages.SOMETHING_WENT_WRONG,
-        StatusCodes.SOMETHING_WENT_WRONG,
-        undefined,
-        RESPONSE_STATUS.ERROR,
-      ),
-    );
   }
+  logger.error(Messages.SOMETHING_WENT_WRONG);
+  next(
+    new GeneralError(
+      Messages.SOMETHING_WENT_WRONG,
+      StatusCodes.SOMETHING_WENT_WRONG,
+      undefined,
+      RESPONSE_STATUS.ERROR,
+    ),
+  );
 };
 
 const listOfState = async (req, res, next) => {
@@ -53,24 +55,25 @@ const listOfState = async (req, res, next) => {
   ]);
 
   if (stateData) {
+    logger.info(Messages.STATE_GET_SUCCESS);
     next(
       new GeneralError(
-        Messages.STATE_GET_SUCCESS,
+        undefined,
         StatusCodes.OK,
         stateData,
         RESPONSE_STATUS.SUCCESS,
       ),
     );
-  } else {
-    next(
-      new GeneralError(
-        Messages.SOMETHING_WENT_WRONG,
-        StatusCodes.BAD_REQUEST,
-        undefined,
-        RESPONSE_STATUS.ERROR,
-      ),
-    );
   }
+  logger.error(Messages.SOMETHING_WENT_WRONG);
+  next(
+    new GeneralError(
+      Messages.SOMETHING_WENT_WRONG,
+      StatusCodes.BAD_REQUEST,
+      undefined,
+      RESPONSE_STATUS.ERROR,
+    ),
+  );
 };
 
 const listOfCity = async (req, res, next) => {
@@ -96,28 +99,29 @@ const listOfCity = async (req, res, next) => {
   ]);
 
   if (cityData) {
+    logger.info(Messages.CITY_GET_SUCCESS);
     next(
       new GeneralError(
-        Messages.CITY_GET_SUCCESS,
+        undefined,
         StatusCodes.OK,
         cityData,
         RESPONSE_STATUS.SUCCESS,
       ),
     );
-  } else {
-    next(
-      new GeneralError(
-        Messages.SOMETHING_WENT_WRONG,
-        StatusCodes.BAD_REQUEST,
-        undefined,
-        RESPONSE_STATUS.ERROR,
-      ),
-    );
   }
+  logger.error(Messages.SOMETHING_WENT_WRONG);
+  next(
+    new GeneralError(
+      Messages.SOMETHING_WENT_WRONG,
+      StatusCodes.BAD_REQUEST,
+      undefined,
+      RESPONSE_STATUS.ERROR,
+    ),
+  );
 };
 
 module.exports = {
   listOfCountry,
   listOfState,
-  listOfCity
+  listOfCity,
 };
