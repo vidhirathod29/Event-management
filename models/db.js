@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const { Messages } = require('../utils/messages');
-const logger = require('../logger/logger')
+const logger = require('../logger/logger');
+require('../models/service');
 
 mongoose
   .connect('mongodb://localhost:27017/event-management')

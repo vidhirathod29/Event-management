@@ -7,7 +7,7 @@ const logger = require('../logger/logger');
 
 const generateToken = (req) => {
   const token = jwt.sign(
-    { email: req.email, password: req.password },
+    { email: req.email, password: req.password, role: req.role },
     process.env.PRIVATE_KEY,
   );
   return token;
@@ -19,7 +19,7 @@ const authorization = (roles) => {
       const token = req.header('Authorization');
 
       if (!token) {
-        logger.error(Messages.TOKEN_VERIFY_FAILED)
+        logger.error(Messages.TOKEN_VERIFY_FAILED);
         next(
           new GeneralError(
             Messages.TOKEN_VERIFY_FAILED,
@@ -35,7 +35,7 @@ const authorization = (roles) => {
       if (roles.length > 0 && roles.some((role) => role === verified.role)) {
         next();
       } else {
-        logger.error(Messages.USER_UNAUTHORIZED)
+        logger.error(Messages.USER_UNAUTHORIZED);
         next(
           new GeneralError(
             Messages.USER_UNAUTHORIZED,
@@ -46,7 +46,8 @@ const authorization = (roles) => {
         );
       }
     } catch (err) {
-      logger.error(Messages.INTERNAL_SERVER_ERROR)
+      console.log('error', err);
+      logger.error(Messages.INTERNAL_SERVER_ERROR);
       next(
         new GeneralError(
           Messages.INTERNAL_SERVER_ERROR,

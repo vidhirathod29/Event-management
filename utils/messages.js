@@ -21,5 +21,7 @@ module.exports = {
     OTP_GENERATE_FAIL: 'Failed to generate otp',
     OTP_EXPIRE: 'Otp is expired',
     INVALID_OTP: 'Please enter a valid otp',
+    ADD_SUCCESS: 'added successfully',
+    DELETE_SUCCESS: 'deleted successfully',
   },
 };
