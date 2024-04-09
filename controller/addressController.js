@@ -5,6 +5,7 @@ const { StatusCodes } = require('http-status-codes');
 const { RESPONSE_STATUS } = require('../utils/enum');
 const { Messages } = require('../utils/messages');
 const { GeneralError } = require('../utils/error');
+const logger = require('../logger/logger');
 
 const listOfCountry = async (req, res, next) => {
   const country = await countryModel.find({}, { _id: 1, country_name: 1 });
