@@ -11,7 +11,7 @@ const listOfCountry = async (req, res, next) => {
   const country = await countryModel.find({});
 
   if (country.length > 0) {
-    logger.info(Messages.COUNTRY_GET_SUCCESS);
+    logger.info(`Country ${Messages.GET_SUCCESS}`);
     next(
       new GeneralError(
         undefined,
@@ -55,7 +55,7 @@ const listOfState = async (req, res, next) => {
   ]);
 
   if (stateData) {
-    logger.info(Messages.STATE_GET_SUCCESS);
+    logger.info(`State ${Messages.GET_SUCCESS}`);
     next(
       new GeneralError(
         undefined,
@@ -99,7 +99,7 @@ const listOfCity = async (req, res, next) => {
   ]);
 
   if (cityData) {
-    logger.info(Messages.CITY_GET_SUCCESS);
+    logger.info(`City ${Messages.GET_SUCCESS}`);
     next(
       new GeneralError(
         undefined,
