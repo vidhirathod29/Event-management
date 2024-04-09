@@ -35,7 +35,7 @@ const authorization = (roles) => {
       if (roles.length > 0 && roles.some((role) => role === verified.role)) {
         next();
       } else {
-        logger.error(Messages.USER_UNAUTHORIZED);
+        logger.error(Messages.USER_UNAUTHORIZED)
         next(
           new GeneralError(
             Messages.USER_UNAUTHORIZED,

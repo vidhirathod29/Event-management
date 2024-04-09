@@ -6,6 +6,9 @@ const {
   login,
   updateProfile,
   viewProfile,
+  resetPassword,
+  verifyEmail,
+  updatePassword,
 } = require('../controller/authController');
 const { errorHandler } = require('../helper/error');
 const { validator } = require('../validation/validator');
@@ -34,6 +37,21 @@ router.get(
   '/viewProfile',
   authorization([ROLES.ADMIN, ROLES.ORGANIZATION]),
   errorHandler(viewProfile),
+);
+
+router.put(
+  '/changePassword',
+  authorization([ROLES.ADMIN, ROLES.ORGANIZATION, ROLES.USER]),
+  validator.body(validate.resetPassword),
+  errorHandler(resetPassword),
+);
+
+router.post('/verifyEmail', errorHandler(verifyEmail));
+
+router.put(
+  '/updatePassword',
+  validator.body(validate.updatePassword),
+  errorHandler(updatePassword),
 );
 
 module.exports = router;
