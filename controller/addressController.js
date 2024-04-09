@@ -7,27 +7,28 @@ const { Messages } = require('../utils/messages');
 const { GeneralError } = require('../utils/error');
 
 const listOfCountry = async (req, res, next) => {
-  const country = await countryModel.find({});
+  const country = await countryModel.find({}, { _id: 1, country_name: 1 });
 
   if (country.length > 0) {
+    logger.info(`Country ${Messages.GET_SUCCESS}`);
     next(
       new GeneralError(
-        Messages.COUNTRY_GET_SUCCESS,
+        undefined,
         StatusCodes.OK,
         country,
         RESPONSE_STATUS.SUCCESS,
       ),
     );
-  } else {
-    next(
-      new GeneralError(
-        Messages.SOMETHING_WENT_WRONG,
-        StatusCodes.SOMETHING_WENT_WRONG,
-        undefined,
-        RESPONSE_STATUS.ERROR,
-      ),
-    );
   }
+  logger.error(Messages.SOMETHING_WENT_WRONG);
+  next(
+    new GeneralError(
+      Messages.SOMETHING_WENT_WRONG,
+      StatusCodes.SOMETHING_WENT_WRONG,
+      undefined,
+      RESPONSE_STATUS.ERROR,
+    ),
+  );
 };
 
 const listOfState = async (req, res, next) => {
@@ -47,30 +48,34 @@ const listOfState = async (req, res, next) => {
       $project: {
         _id: 1,
         state_name: 1,
-        countryDetail: '$countryDetails.country_name',
+        countryDetail: {
+          _id: '$countryDetails._id',
+          country_name: '$countryDetails.country_name',
+        },
       },
     },
   ]);
 
   if (stateData) {
+    logger.info(`State ${Messages.GET_SUCCESS}`);
     next(
       new GeneralError(
-        Messages.STATE_GET_SUCCESS,
+        undefined,
         StatusCodes.OK,
         stateData,
         RESPONSE_STATUS.SUCCESS,
       ),
     );
-  } else {
-    next(
-      new GeneralError(
-        Messages.SOMETHING_WENT_WRONG,
-        StatusCodes.BAD_REQUEST,
-        undefined,
-        RESPONSE_STATUS.ERROR,
-      ),
-    );
   }
+  logger.error(Messages.SOMETHING_WENT_WRONG);
+  next(
+    new GeneralError(
+      Messages.SOMETHING_WENT_WRONG,
+      StatusCodes.BAD_REQUEST,
+      undefined,
+      RESPONSE_STATUS.ERROR,
+    ),
+  );
 };
 
 const listOfCity = async (req, res, next) => {
@@ -90,34 +95,38 @@ const listOfCity = async (req, res, next) => {
       $project: {
         _id: 1,
         city_name: 1,
-        stateDetail: '$stateDetails.state_name',
+        stateDetails: {
+          _id: '$stateDetails._id',
+          country_name: '$stateDetails.state_name',
+        },
       },
     },
   ]);
 
   if (cityData) {
+    logger.info(`City ${Messages.GET_SUCCESS}`);
     next(
       new GeneralError(
-        Messages.CITY_GET_SUCCESS,
+        undefined,
         StatusCodes.OK,
         cityData,
         RESPONSE_STATUS.SUCCESS,
       ),
     );
-  } else {
-    next(
-      new GeneralError(
-        Messages.SOMETHING_WENT_WRONG,
-        StatusCodes.BAD_REQUEST,
-        undefined,
-        RESPONSE_STATUS.ERROR,
-      ),
-    );
   }
+  logger.error(Messages.SOMETHING_WENT_WRONG);
+  next(
+    new GeneralError(
+      Messages.SOMETHING_WENT_WRONG,
+      StatusCodes.BAD_REQUEST,
+      undefined,
+      RESPONSE_STATUS.ERROR,
+    ),
+  );
 };
 
 module.exports = {
   listOfCountry,
   listOfState,
-  listOfCity
+  listOfCity,
 };
