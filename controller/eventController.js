@@ -167,7 +167,7 @@ const listOfEvent = async (req, res, next) => {
       ),
     );
   }
-  logger.error(Messages.STATE_NOT_FOUND);
+  logger.error(`Event ${Messages.NOT_FOUND}`);
   next(
     new GeneralResponse(
       `Event ${Messages.NOT_FOUND}`,
