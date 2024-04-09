@@ -27,10 +27,10 @@ const registration = async (req, res, next) => {
   }
 
   if (!req.file) {
-    logger.error(Messages.IMAGE_NOT_FOUND);
+    logger.error(`Image ${Messages.NOT_FOUND}`);
     next(
       new GeneralError(
-        Messages.IMAGE_NOT_FOUND,
+        `Image ${Messages.NOT_FOUND}`,
         StatusCodes.NOT_FOUND,
         undefined,
         RESPONSE_STATUS.ERROR,
@@ -80,10 +80,10 @@ const login = async (req, res, next) => {
   const user = await authModel.findOne({ email });
 
   if (!user) {
-    logger.error(Messages.USER_NOT_FOUND);
+    logger.error(`User ${Messages.NOT_FOUND}`);
     next(
       new GeneralError(
-        Messages.USER_NOT_FOUND,
+        `User ${Messages.NOT_FOUND}`,
         StatusCodes.NOT_FOUND,
         undefined,
         RESPONSE_STATUS.ERROR,
@@ -153,10 +153,10 @@ const updateProfile = async (req, res, next) => {
     );
 
     if (updatedData) {
-      logger.info(Messages.UPDATE_DATA_SUCCESS);
+      logger.info(`User profile ${Messages.UPDATE_SUCCESS}`);
       next(
         new GeneralResponse(
-          Messages.UPDATE_DATA_SUCCESS,
+          `User profile ${Messages.UPDATE_SUCCESS}`,
           StatusCodes.ACCEPTED,
           undefined,
           RESPONSE_STATUS.SUCCESS,
@@ -173,10 +173,10 @@ const updateProfile = async (req, res, next) => {
       ),
     );
   } else {
-    logger.error(Messages.USER_NOT_FOUND);
+    logger.error(`User ${Messages.NOT_FOUND}`);
     next(
       new GeneralError(
-        Messages.USER_NOT_FOUND,
+        `User ${Messages.NOT_FOUND}`,
         StatusCodes.NOT_FOUND,
         undefined,
         RESPONSE_STATUS.ERROR,
@@ -200,10 +200,10 @@ const viewProfile = async (req, res, next) => {
       ),
     );
   }
-  logger.error(Messages.USER_NOT_FOUND);
+  logger.error(`User ${Messages.NOT_FOUND}`);
   next(
     new GeneralError(
-      Messages.USER_NOT_FOUND,
+      `User ${Messages.NOT_FOUND}`,
       StatusCodes.NOT_FOUND,
       undefined,
       RESPONSE_STATUS.ERROR,
@@ -217,10 +217,10 @@ const resetPassword = async (req, res, next) => {
   const { oldPassword, newPassword } = req.body;
 
   if (!user) {
-    logger.error(Messages.USER_NOT_FOUND);
+    logger.error(`User ${Messages.NOT_FOUND}`);
     next(
       new GeneralError(
-        Messages.USER_NOT_FOUND,
+        `User ${Messages.NOT_FOUND}`,
         StatusCodes.NOT_FOUND,
         undefined,
         RESPONSE_STATUS.ERROR,
@@ -275,10 +275,10 @@ const verifyEmail = async (req, res, next) => {
   const user = await authModel.findOne({ email: email });
 
   if (!user) {
-    logger.error(Messages.USER_NOT_FOUND);
+    logger.error(`User ${Messages.NOT_FOUND}`);
     next(
       new GeneralError(
-        Messages.USER_NOT_FOUND,
+        `User ${Messages.NOT_FOUND}`,
         StatusCodes.NOT_FOUND,
         undefined,
         RESPONSE_STATUS.ERROR,
@@ -351,10 +351,10 @@ const updatePassword = async (req, res, next) => {
     if (updatedPassword) {
       await otpModel.deleteOne({ otp });
 
-      logger.info(Messages.PASS_UPDATE_SUCCESS);
+      logger.info(`Password ${Messages.UPDATE_SUCCESS}`);
       next(
         new GeneralResponse(
-          Messages.PASS_UPDATE_SUCCESS,
+          `Password ${Messages.UPDATE_SUCCESS}`,
           StatusCodes.OK,
           undefined,
           RESPONSE_STATUS.SUCCESS,
@@ -389,5 +389,5 @@ module.exports = {
   viewProfile,
   resetPassword,
   verifyEmail,
-  updatePassword
+  updatePassword,
 };
