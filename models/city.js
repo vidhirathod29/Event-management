@@ -11,7 +11,7 @@ const city = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  updatedAt: {
+  updated_at: {
     type: Date,
     default: Date.now,
   },
