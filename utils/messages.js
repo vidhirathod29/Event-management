@@ -17,7 +17,6 @@ module.exports = {
     GET_SUCCESS: 'get successfully',
     SOMETHING_WENT_WRONG: 'Something went wrong',
     INTERNAL_SERVER_ERROR: 'Internal server error',
-    SERVER_ERROR: 'Internal server error',
     RESET_PASS_SUCCESS: 'Password reset successfully',
     INVALID_OLD_PASS: 'Invalid old password',
     OTP_SENT_SUCCESS: 'Otp sent successfully',
