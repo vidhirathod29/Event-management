@@ -10,7 +10,7 @@ module.exports = {
     TOKEN_EXPIRED: 'Token expired',
     NO_VALID_FIELDS: 'No valid fields provided',
     UPDATE_SUCCESS: 'updated successfully',
-    GET_SUCCESS: 'Getting successfully',
+    GET_SUCCESS: 'data get successfully',
     FAILED_TO: 'Failed to ',
     DATABASE_CONNECTION: 'Database connected successfully',
     NO_DATABASE_CONNECTION: 'Could not connect to the database',

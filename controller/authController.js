@@ -190,7 +190,7 @@ const viewProfile = async (req, res, next) => {
   const user = await authModel.findOne({ email: email });
 
   if (user) {
-    logger.info(`User data get successfully`);
+    logger.info(`User ${Messages.GET_SUCCESS}`);
     next(
       new GeneralError(
         undefined,
