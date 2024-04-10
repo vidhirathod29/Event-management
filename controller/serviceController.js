@@ -7,11 +7,12 @@ const { GeneralError } = require('../utils/error');
 const logger = require('../logger/logger');
 
 const addService = async (req, res, next) => {
-  const { user_id, event_manage_id, service_name, price, service_description } =
+  const userId = req.user.id;
+  const { event_manage_id, service_name, price, service_description } =
     req.body;
 
   const newService = new serviceModel({
-    user_id,
+    user_id: userId,
     event_manage_id,
     service_name,
     price,
@@ -45,9 +46,9 @@ const addService = async (req, res, next) => {
 
 const updateService = async (req, res, next) => {
   const serviceId = req.params.id;
-  const service = await serviceModel.findById(serviceId);
+  const findService = await serviceModel.findById(serviceId);
 
-  if (service) {
+  if (findService) {
     const { service_name, price, service_description } = req.body;
     const updateService = { service_name, price, service_description };
 
@@ -57,31 +58,31 @@ const updateService = async (req, res, next) => {
     );
 
     if (!updatedService) {
-      logger.error(`${Messages.FAILED_TO_UPDATE} service`);
+      logger.error(`${Messages.FAILED_TO_UPDATE} event service`);
       next(
         new GeneralError(
-          `${Messages.FAILED_TO_UPDATE} service`,
+          `${Messages.FAILED_TO_UPDATE} event service`,
           StatusCodes.BAD_REQUEST,
           undefined,
           RESPONSE_STATUS.ERROR,
         ),
       );
     }
-    
-    logger.info(`Service ${Messages.UPDATE_SUCCESS}`);
+
+    logger.info(`Event service ${Messages.UPDATE_SUCCESS}`);
     next(
       new GeneralResponse(
-        ` Service ${Messages.UPDATE_SUCCESS}`,
+        ` Event service ${Messages.UPDATE_SUCCESS}`,
         StatusCodes.ACCEPTED,
         undefined,
         RESPONSE_STATUS.SUCCESS,
       ),
     );
   } else {
-    logger.error(`Service ${Messages.NOT_FOUND}`);
+    logger.error(`Event service ${Messages.NOT_FOUND}`);
     next(
       new GeneralError(
-        `Service ${Messages.NOT_FOUND}`,
+        `Event service ${Messages.NOT_FOUND}`,
         StatusCodes.NOT_FOUND,
         undefined,
         RESPONSE_STATUS.ERROR,
@@ -98,30 +99,30 @@ const deleteService = async (req, res, next) => {
     const deleteEvent = await serviceModel.findByIdAndDelete(serviceId);
 
     if (!deleteEvent) {
-      logger.error(`${Messages.FAILED_TO} delete service`);
+      logger.error(`${Messages.FAILED_TO} delete event service`);
       next(
         new GeneralError(
-          `${Messages.FAILED_TO} delete service`,
+          `${Messages.FAILED_TO} delete event service`,
           StatusCodes.BAD_REQUEST,
           undefined,
           RESPONSE_STATUS.ERROR,
         ),
       );
     }
-    logger.info(`Service ${Messages.DELETE_SUCCESS}`);
+    logger.info(`Event service ${Messages.DELETE_SUCCESS}`);
     next(
       new GeneralResponse(
-        `Service ${Messages.DELETE_SUCCESS}`,
+        `Event service ${Messages.DELETE_SUCCESS}`,
         StatusCodes.OK,
         undefined,
         RESPONSE_STATUS.SUCCESS,
       ),
     );
   } else {
-    logger.error(`Service ${Messages.NOT_FOUND}`);
+    logger.error(`Event service ${Messages.NOT_FOUND}`);
     next(
       new GeneralError(
-        `Service ${Messages.NOT_FOUND}`,
+        `Event service ${Messages.NOT_FOUND}`,
         StatusCodes.NOT_FOUND,
         undefined,
         RESPONSE_STATUS.ERROR,
@@ -141,7 +142,7 @@ const listOfService = async (req, res, next) => {
   const serviceList = await query.exec();
 
   if (serviceList.length > 0) {
-    logger.info(`Service ${Messages.GET_SUCCESS}`);
+    logger.info(`Event service ${Messages.GET_SUCCESS}`);
     next(
       new GeneralError(
         undefined,
@@ -151,10 +152,10 @@ const listOfService = async (req, res, next) => {
       ),
     );
   } else {
-    logger.error(`Service ${Messages.NOT_FOUND}`);
+    logger.error(`Event service ${Messages.NOT_FOUND}`);
     next(
       new GeneralResponse(
-        `Service ${Messages.NOT_FOUND}`,
+        `Event service ${Messages.NOT_FOUND}`,
         StatusCodes.NOT_FOUND,
         undefined,
         RESPONSE_STATUS.ERROR,

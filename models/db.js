@@ -5,7 +5,6 @@ require('../models/service');
  require('../models/state')
  require('../models/country');
  require('../models/city');
-const logger = require('../logger/logger')
 
 mongoose
   .connect('mongodb://localhost:27017/event-management')

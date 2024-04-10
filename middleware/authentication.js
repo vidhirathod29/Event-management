@@ -7,7 +7,7 @@ const logger = require('../logger/logger');
 
 const generateToken = (req) => {
   const token = jwt.sign(
-    { email: req.email, password: req.password, role: req.role },
+    { email: req.email, password: req.password, role: req.role, id: req.id },
     process.env.PRIVATE_KEY,
   );
   return token;
@@ -46,7 +46,6 @@ const authorization = (roles) => {
         );
       }
     } catch (err) {
-      console.log('error', err);
       logger.error(Messages.INTERNAL_SERVER_ERROR);
       next(
         new GeneralError(
