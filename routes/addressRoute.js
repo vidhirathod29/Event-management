@@ -40,7 +40,7 @@ router.delete(
 
 router.post(
   '/listOfAddress',
-  authorization([ROLES.ADMIN, ROLES.ORGANIZATION]),
+  authorization([ROLES.ADMIN, ROLES.ORGANIZATION, ROLES.USER]),
   validator.body(validate.listOfAddress),
   errorHandler(listOfAddress),
 );
