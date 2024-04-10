@@ -36,21 +36,6 @@ module.exports = {
   }),
 
   updateAddress: Joi.object({
-    country_id: Joi.string().empty().required().messages({
-      'string.base': 'Country id should be type of string',
-      'string.empty': 'Country id should not be empty',
-      'any.required': 'Country id is required',
-    }),
-    state_id: Joi.string().empty().required().messages({
-      'string.base': 'State id should be type of string',
-      'string.empty': 'State id should not be empty',
-      'any.required': 'State id is required',
-    }),
-    city_id: Joi.string().empty().required().messages({
-      'string.base': 'City id should be type of string',
-      'string.empty': 'City id should not be empty',
-      'any.required': 'City id is required',
-    }),
     address_line1: Joi.string().empty().messages({
       'string.base': 'Address line 1 should be type of string',
       'string.empty': 'Address line 1 should not be empty',
