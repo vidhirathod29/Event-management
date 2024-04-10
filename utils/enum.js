@@ -13,5 +13,8 @@ module.exports = {
   STATUS: {
     ACTIVE: 'active',
     DEACTIVATE: 'deactivate',
+    PENDING: 'pending',
+    CANCELLED: 'cancelled',
+    APPROVED: 'approved',
   },
 };
