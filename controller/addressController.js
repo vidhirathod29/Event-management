@@ -1,10 +1,12 @@
 const { countryModel } = require('../models/country');
 const { stateModel } = require('../models/state');
 const { cityModel } = require('../models/city');
+const { addressModel } = require('../models/address');
 const { StatusCodes } = require('http-status-codes');
 const { RESPONSE_STATUS } = require('../utils/enum');
 const { Messages } = require('../utils/messages');
 const { GeneralError } = require('../utils/error');
+const { GeneralResponse } = require('../utils/response');
 const logger = require('../logger/logger');
 
 const listOfCountry = async (req, res, next) => {
@@ -126,8 +128,183 @@ const listOfCity = async (req, res, next) => {
   );
 };
 
+const addAddress = async (req, res, next) => {
+  const userId = req.user.id;
+
+  const {
+    country_id,
+    state_id,
+    city_id,
+    address_line1,
+    address_line2,
+    zip_code,
+  } = req.body;
+
+  const newAddress = new addressModel({
+    user_id: userId,
+    country_id,
+    state_id,
+    city_id,
+    address_line1,
+    address_line2,
+    zip_code,
+  });
+
+  const addAddress = await newAddress.save();
+
+  logger.info(`Address ${Messages.ADD_SUCCESS}`);
+  next(
+    new GeneralError(
+      `Address ${Messages.ADD_SUCCESS}`,
+      StatusCodes.OK,
+      addAddress.id,
+      RESPONSE_STATUS.SUCCESS,
+    ),
+  );
+};
+
+const updateAddress = async (req, res, next) => {
+  const addressId = req.params.id;
+
+  const findAddress = await addressModel.findById(addressId);
+
+  if (findAddress) {
+    const {
+      user_id,
+      country_id,
+      state_id,
+      city_id,
+      address_line1,
+      address_line2,
+      zip_code,
+    } = req.body;
+
+    const updateAddress = {
+      user_id,
+      country_id,
+      state_id,
+      city_id,
+      address_line1,
+      address_line2,
+      zip_code,
+    };
+
+    const updatedAddress = await addressModel.findByIdAndUpdate(
+      addressId,
+      updateAddress,
+    );
+
+    if (!updatedAddress) {
+      logger.error(`${Messages.FAILED_TO} update address`);
+      next(
+        new GeneralError(
+          `${Messages.FAILED_TO} update address`,
+          StatusCodes.BAD_REQUEST,
+          undefined,
+          RESPONSE_STATUS.ERROR,
+        ),
+      );
+    }
+    logger.info(`Address ${Messages.UPDATE_SUCCESS}`);
+    next(
+      new GeneralResponse(
+        ` Address ${Messages.UPDATE_SUCCESS}`,
+        StatusCodes.ACCEPTED,
+        undefined,
+        RESPONSE_STATUS.SUCCESS,
+      ),
+    );
+  } else {
+    logger.error(`Address ${Messages.NOT_FOUND}`);
+    next(
+      new GeneralError(
+        `Address ${Messages.NOT_FOUND}`,
+        StatusCodes.NOT_FOUND,
+        undefined,
+        RESPONSE_STATUS.ERROR,
+      ),
+    );
+  }
+};
+
+const deleteAddress = async (req, res, next) => {
+  const addressId = req.params.id;
+
+  const findAddress = await addressModel.findById(addressId);
+
+  if (findAddress) {
+    const deleteAddress = await addressModel.findByIdAndDelete(addressId);
+    if (!deleteAddress) {
+      logger.error(`${Messages.FAILED_TO} delete address`);
+      next(
+        new GeneralError(
+          `${Messages.FAILED_TO} delete address`,
+          StatusCodes.BAD_REQUEST,
+          undefined,
+          RESPONSE_STATUS.ERROR,
+        ),
+      );
+    }
+    logger.info(`Address ${Messages.DELETE_SUCCESS}`);
+    next(
+      new GeneralResponse(
+        `Address ${Messages.DELETE_SUCCESS}`,
+        StatusCodes.OK,
+        undefined,
+        RESPONSE_STATUS.SUCCESS,
+      ),
+    );
+  } else {
+    logger.error(`Address ${Messages.NOT_FOUND}`);
+    next(
+      new GeneralError(
+        `Address ${Messages.NOT_FOUND}`,
+        StatusCodes.NOT_FOUND,
+        undefined,
+        RESPONSE_STATUS.ERROR,
+      ),
+    );
+  }
+};
+
+const listOfAddress = async (req, res, next) => {
+  const { condition, pageSize } = req.body;
+  const query = addressModel.find(condition);
+
+  if (pageSize) {
+    query.limit(parseInt(pageSize));
+  }
+
+  const addressList = await query.exec();
+
+  if (addressList.length > 0) {
+    logger.info(`Address ${Messages.GET_SUCCESS}`);
+    next(
+      new GeneralError(
+        undefined,
+        StatusCodes.OK,
+        addressList,
+        RESPONSE_STATUS.SUCCESS,
+      ),
+    );
+  }
+  logger.error(`Address ${Messages.NOT_FOUND}`);
+  next(
+    new GeneralResponse(
+      `Address ${Messages.NOT_FOUND}`,
+      StatusCodes.NOT_FOUND,
+      undefined,
+      RESPONSE_STATUS.ERROR,
+    ),
+  );
+};
+
 module.exports = {
   listOfCountry,
   listOfState,
   listOfCity,
+  addAddress,
+  updateAddress,
+  deleteAddress,
+  listOfAddress,
 };
