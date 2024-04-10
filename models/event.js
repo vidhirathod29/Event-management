@@ -14,9 +14,14 @@ const event = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  updatedAt: {
+  updated_at: {
     type: Date,
     default: Date.now,
+  },
+  is_deleted: {
+    type: Boolean,
+    required: true,
+    default: false,
   },
 });
 

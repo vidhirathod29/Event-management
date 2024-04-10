@@ -8,10 +8,11 @@ const { GeneralError } = require('../utils/error');
 const logger = require('../logger/logger');
 
 const addEvent = async (req, res, next) => {
-  const { user_id, event_name, event_description } = req.body;
+  const userId = req.user.id;
+  const { event_name, event_description } = req.body;
 
   const newEvent = new eventModel({
-    user_id,
+    user_id: userId,
     event_name,
     event_description,
   });
@@ -29,7 +30,7 @@ const addEvent = async (req, res, next) => {
       ),
     );
   }
-  logger.info(Messages.ADD_SUCCESS);
+  logger.info(`Event ${Messages.ADD_SUCCESS}`);
   next(
     new GeneralResponse(
       `Event ${Messages.ADD_SUCCESS}`,
@@ -47,10 +48,10 @@ const addImage = async (req, res, next) => {
   });
 
   await newImage.save();
-  logger.info(`Event ${Messages.IMAGE_SUCCESS}`);
+  logger.info(`Event image ${Messages.ADD_SUCCESS}`);
   next(
     new GeneralResponse(
-      `Event ${Messages.IMAGE_SUCCESS}`,
+      `Event image ${Messages.ADD_SUCCESS}`,
       StatusCodes.OK,
       undefined,
       RESPONSE_STATUS.SUCCESS,
@@ -61,9 +62,9 @@ const addImage = async (req, res, next) => {
 const updateEvent = async (req, res, next) => {
   const eventId = req.params.id;
 
-  const event = await eventModel.findById(eventId);
+  const findEvent = await eventModel.findById(eventId);
 
-  if (event) {
+  if (findEvent) {
     const { event_name, event_description } = req.body;
     const updateEvent = { event_name, event_description };
 
@@ -73,10 +74,10 @@ const updateEvent = async (req, res, next) => {
     );
 
     if (!updatedEvent) {
-      logger.error(`${Messages.FAILED_TO_UPDATE} event`);
+      logger.error(`${Messages.FAILED_TO} update event`);
       next(
         new GeneralError(
-          `${Messages.FAILED_TO_UPDATE} event`,
+          `${Messages.FAILED_TO} update event`,
           StatusCodes.BAD_REQUEST,
           undefined,
           RESPONSE_STATUS.ERROR,
@@ -86,7 +87,7 @@ const updateEvent = async (req, res, next) => {
     logger.info(`Event ${Messages.UPDATE_SUCCESS}`);
     next(
       new GeneralResponse(
-        ` Event ${Messages.UPDATE_SUCCESS}`,
+        `Event ${Messages.UPDATE_SUCCESS}`,
         StatusCodes.ACCEPTED,
         undefined,
         RESPONSE_STATUS.SUCCESS,
@@ -108,16 +109,18 @@ const updateEvent = async (req, res, next) => {
 const deleteEvent = async (req, res, next) => {
   const eventId = req.params.id;
 
-  const event = await eventModel.findById(eventId);
+  const findEvent = await eventModel.findById(eventId);
 
-  if (event) {
-    const deleteEvent = await eventModel.findByIdAndDelete(eventId);
+  if (findEvent) {
+    const deleteEvent = await eventModel.findByIdAndUpdate(eventId, {
+      is_deleted: true,
+    });
 
     if (!deleteEvent) {
-      logger.error(`${Messages.FAILED_TO_DELETE} event`);
+      logger.error(`${Messages.FAILED_TO} delete event`);
       next(
         new GeneralError(
-          `${Messages.FAILED_TO_DELETE} event`,
+          `${Messages.FAILED_TO} delete event`,
           StatusCodes.BAD_REQUEST,
           undefined,
           RESPONSE_STATUS.ERROR,

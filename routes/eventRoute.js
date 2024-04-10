@@ -31,7 +31,7 @@ router.put(
 
 router.post(
   '/listOfEvent',
-  authorization([ROLES.ADMIN, ROLES.ORGANIZATION]),
+  authorization([ROLES.ADMIN, ROLES.ORGANIZATION, ROLES.USER]),
   validator.body(validate.listOfEvent),
   errorHandler(controller.listOfEvent),
 );
