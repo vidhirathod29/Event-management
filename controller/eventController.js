@@ -32,10 +32,10 @@ const addEvent = async (req, res, next) => {
   }
   logger.info(`Event ${Messages.ADD_SUCCESS}`);
   next(
-    new GeneralResponse(
+    new GeneralError(
       `Event ${Messages.ADD_SUCCESS}`,
       StatusCodes.OK,
-      undefined,
+      addedEvent.id,
       RESPONSE_STATUS.SUCCESS,
     ),
   );
@@ -44,7 +44,7 @@ const addEvent = async (req, res, next) => {
 const addImage = async (req, res, next) => {
   const newImage = new eventImageModel({
     event_manage_id: req.body.event_manage_id,
-    event_image: req.file.filename,
+    event_image: req.file,
   });
 
   await newImage.save();
@@ -62,7 +62,10 @@ const addImage = async (req, res, next) => {
 const updateEvent = async (req, res, next) => {
   const eventId = req.params.id;
 
-  const findEvent = await eventModel.findById(eventId);
+  const findEvent = await eventModel.findOne({
+    _id: eventId,
+    is_deleted: false,
+  });
 
   if (findEvent) {
     const { event_name, event_description } = req.body;
@@ -151,13 +154,45 @@ const deleteEvent = async (req, res, next) => {
 
 const listOfEvent = async (req, res, next) => {
   const { condition, pageSize } = req.body;
-  const query = eventModel.find(condition);
+  const pipeline = [
+    { $match: { ...condition, is_deleted: false } },
+
+    {
+      $set: {
+        user_id: { $toObjectId: '$user_id' },
+      },
+    },
+
+    {
+      $lookup: {
+        from: 'users',
+        localField: 'user_id',
+        foreignField: '_id',
+        as: 'user_info',
+      },
+    },
+
+    {
+      $unwind: '$user_info',
+    },
+
+    {
+      $project: {
+        event_name: 1,
+        event_description: 1,
+        user_info: {
+          _id: '$user_info._id',
+          name: '$user_info.name',
+        },
+      },
+    },
+  ];
 
   if (pageSize) {
-    query.limit(parseInt(pageSize));
+    pipeline.push({ $limit: parseInt(pageSize) });
   }
 
-  const eventList = await query.exec();
+  const eventList = await eventModel.aggregate(pipeline);
 
   if (eventList.length > 0) {
     logger.info(`Event ${Messages.GET_SUCCESS}`);
@@ -169,16 +204,17 @@ const listOfEvent = async (req, res, next) => {
         RESPONSE_STATUS.SUCCESS,
       ),
     );
+  } else {
+    logger.error(`Event ${Messages.NOT_FOUND}`);
+    next(
+      new GeneralResponse(
+        `Event ${Messages.NOT_FOUND}`,
+        StatusCodes.NOT_FOUND,
+        undefined,
+        RESPONSE_STATUS.ERROR,
+      ),
+    );
   }
-  logger.error(`Event ${Messages.NOT_FOUND}`);
-  next(
-    new GeneralResponse(
-      `Event ${Messages.NOT_FOUND}`,
-      StatusCodes.NOT_FOUND,
-      undefined,
-      RESPONSE_STATUS.ERROR,
-    ),
-  );
 };
 
 module.exports = { addEvent, addImage, updateEvent, listOfEvent, deleteEvent };

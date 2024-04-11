@@ -17,7 +17,7 @@ router.post(
 
 router.post(
   '/addEventImage',
-  upload.single('event_image'),
+  upload.array('event_image',5),
   authorization([ROLES.ADMIN, ROLES.ORGANIZATION]),
   errorHandler(controller.addImage),
 );
