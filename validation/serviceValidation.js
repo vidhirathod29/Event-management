@@ -2,11 +2,6 @@ const Joi = require('joi');
 
 module.exports = {
   addService: Joi.object({
-    user_id: Joi.string().empty().required().messages({
-      'string.base': 'User id should be type of String ',
-      'string.empty': 'User id should not be empty',
-      'any.required': 'User id is required',
-    }),
     event_manage_id: Joi.string().empty().required().messages({
       'string.base': 'Event id should be type of String ',
       'string.empty': 'Event id should not be empty',

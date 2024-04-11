@@ -34,7 +34,7 @@ router.delete(
 
 router.post(
   '/listOfService',
-  authorization([ROLES.ADMIN, ROLES.ORGANIZATION]),
+  authorization([ROLES.ADMIN, ROLES.ORGANIZATION, ROLES.USER]),
   validator.body(validate.listOfService),
   errorHandler(listOfService),
 );
