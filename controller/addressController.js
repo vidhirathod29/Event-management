@@ -269,13 +269,96 @@ const deleteAddress = async (req, res, next) => {
 
 const listOfAddress = async (req, res, next) => {
   const { condition, pageSize } = req.body;
-  const query = addressModel.find(condition);
+  const pipeline = [
+    { $match: { condition } },
+
+    {
+      $set: {
+        user_id: { $toObjectId: '$user_id' },
+        country_id: { $toObjectId: '$country_id' },
+        state_id: { $toObjectId: '$state_id' },
+        city_id: { $toObjectId: '$city_id' },
+      },
+    },
+
+    {
+      $lookup: {
+        from: 'users',
+        localField: 'user_id',
+        foreignField: '_id',
+        as: 'user_info',
+      },
+    },
+
+    {
+      $lookup: {
+        from: 'countries',
+        localField: 'country_id',
+        foreignField: '_id',
+        as: 'country_info',
+      },
+    },
+    {
+      $lookup: {
+        from: 'states',
+        localField: 'state_id',
+        foreignField: '_id',
+        as: 'state_info',
+      },
+    },
+    {
+      $lookup: {
+        from: 'cities',
+        localField: 'city_id',
+        foreignField: '_id',
+        as: 'city_info',
+      },
+    },
+
+    {
+      $unwind: '$user_info',
+    },
+
+    {
+      $unwind: '$country_info',
+    },
+    {
+      $unwind: '$state_info',
+    },
+    {
+      $unwind: '$city_info',
+    },
+
+    {
+      $project: {
+        address_line1: 1,
+        address_line2: 1,
+        zip_code: 1,
+        country_info: {
+          _id: '$country_info._id',
+          name: '$country_info.country_name',
+        },
+        state_info: {
+          _id: '$state_info._id',
+          name: '$state_info.state_name',
+        },
+        city_info: {
+          _id: '$city_info._id',
+          name: '$city_info.city_name',
+        },
+        user_info: {
+          _id: '$user_info._id',
+          name: '$user_info.name',
+        },
+      },
+    },
+  ];
 
   if (pageSize) {
-    query.limit(parseInt(pageSize));
+    pipeline.push({ $limit: parseInt(pageSize) });
   }
 
-  const addressList = await query.exec();
+  const addressList = await addressModel.aggregate(pipeline);
 
   if (addressList.length > 0) {
     logger.info(`Address ${Messages.GET_SUCCESS}`);
@@ -287,16 +370,17 @@ const listOfAddress = async (req, res, next) => {
         RESPONSE_STATUS.SUCCESS,
       ),
     );
+  } else {
+    logger.error(`Address ${Messages.NOT_FOUND}`);
+    next(
+      new GeneralResponse(
+        `Address ${Messages.NOT_FOUND}`,
+        StatusCodes.NOT_FOUND,
+        undefined,
+        RESPONSE_STATUS.ERROR,
+      ),
+    );
   }
-  logger.error(`Address ${Messages.NOT_FOUND}`);
-  next(
-    new GeneralResponse(
-      `Address ${Messages.NOT_FOUND}`,
-      StatusCodes.NOT_FOUND,
-      undefined,
-      RESPONSE_STATUS.ERROR,
-    ),
-  );
 };
 
 module.exports = {
