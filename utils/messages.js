@@ -14,7 +14,7 @@ module.exports = {
     FAILED_TO: 'Failed to ',
     DATABASE_CONNECTION: 'Database connected successfully',
     NO_DATABASE_CONNECTION: 'Could not connect to the database',
-    SERVER_ERROR: 'Internal server error',
+    INTERNAL_SERVER_ERROR: 'Internal server error',
     RESET_PASS_SUCCESS: 'Password reset successfully',
     INVALID_OLD_PASS: 'Invalid old password',
     OTP_SENT_SUCCESS: 'Otp sent successfully',

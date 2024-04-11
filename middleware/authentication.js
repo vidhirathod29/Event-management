@@ -46,7 +46,6 @@ const authorization = (roles) => {
         );
       }
     } catch (err) {
-      console.log('error', err);
       logger.error(Messages.INTERNAL_SERVER_ERROR);
       next(
         new GeneralError(
