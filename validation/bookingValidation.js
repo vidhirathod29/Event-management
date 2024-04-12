@@ -30,31 +30,31 @@ module.exports = {
   }),
 
   updateBooking: Joi.object({
-    event_date: Joi.date().empty().messages({
+    event_date: Joi.date().optional().messages({
       'date.base': 'Event date should be type of date',
       'date.empty': 'Event date should not be empty',
-      'any.required': 'Event date is required',
+      'any.only': 'Event date is optional',
     }),
-    additional_information: Joi.string().empty().messages({
+    additional_information: Joi.string().optional().messages({
       'string.base': 'Additional information should be type of string',
       'string.empty': 'Additional information should not be empty',
-      'any.required': 'Additional information is required',
+      'any.only': 'Additional information is optional',
     }),
-    status: Joi.string().empty().messages({
+    status: Joi.string().optional().messages({
       'string.base': 'Status should be type of string',
       'string.empty': 'Status should not be empty',
-      'any.required': 'Status is required',
+      'any.only': 'Status is optional',
     }),
   }),
 
   listOfBooking: Joi.object({
-    condition: Joi.object().optional().empty().messages({
+    condition: Joi.object().optional().messages({
       'object.base': 'Condition should be type of an object',
-      'object.empty': 'Condition should not be empty',
+      'object.only': 'Condition is optional',
     }),
-    pageSize: Joi.number().optional().empty().messages({
+    pageSize: Joi.number().optional().messages({
       'number.base': 'pageSize should be type of a number',
-      'number.empty': 'pageSize should not be empty',
+      'number.only': 'pageSize is optional',
     }),
   }),
 };

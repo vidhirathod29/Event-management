@@ -5,6 +5,7 @@ const { GeneralResponse } = require('../utils/response');
 const { GeneralError } = require('../utils/error');
 const logger = require('../logger/logger');
 const { StatusCodes } = require('http-status-codes');
+const mongoose = require('mongoose');
 
 const addBooking = async (req, res, next) => {
   const userId = req.user.id;
@@ -42,7 +43,9 @@ const addBooking = async (req, res, next) => {
 const updateBooking = async (req, res, next) => {
   const bookingId = req.params.id;
 
-  const findBooking = await bookingModel.findById(bookingId);
+  const findBooking = await bookingModel.findOne(bookingId, {
+    is_deleted: false,
+  });
   if (findBooking) {
     const { event_date, additional_information, status } = req.body;
 
@@ -92,9 +95,11 @@ const updateBooking = async (req, res, next) => {
 
 const listOfBooking = async (req, res, next) => {
   const { condition, pageSize } = req.body;
+  if (condition) {
+    condition._id = new mongoose.Types.ObjectId(condition._id);
+  }
   const pipeline = [
-    { $match: { condition } },
-
+    { $match: { ...condition, is_deleted: false } },
     {
       $set: {
         user_id: { $toObjectId: '$user_id' },
@@ -105,7 +110,6 @@ const listOfBooking = async (req, res, next) => {
         city_id: { $toObjectId: '$city_id' },
       },
     },
-
     {
       $lookup: {
         from: 'users',
@@ -114,11 +118,9 @@ const listOfBooking = async (req, res, next) => {
         as: 'user_info',
       },
     },
-
     {
       $unwind: '$user_info',
     },
-
     {
       $lookup: {
         from: 'events',
@@ -127,11 +129,26 @@ const listOfBooking = async (req, res, next) => {
         as: 'event_info',
       },
     },
-
     {
       $unwind: '$event_info',
     },
-
+    { $addFields: { _id: { $toString: '$_id' } } },
+    {
+      $lookup: {
+        from: 'event_images',
+        localField: '_id',
+        foreignField: 'event_manage_id',
+        as: 'event_image',
+      },
+    },
+    {
+      $lookup: {
+        from: 'services',
+        localField: '_id',
+        foreignField: 'event_manage_id',
+        as: 'service_info',
+      },
+    },
     {
       $lookup: {
         from: 'addresses',
@@ -140,13 +157,10 @@ const listOfBooking = async (req, res, next) => {
         as: 'address_info',
       },
     },
-
     {
       $unwind: '$address_info',
     },
-
     { $addFields: { country_id: { $toObjectId: '$address_info.country_id' } } },
-
     {
       $lookup: {
         from: 'countries',
@@ -155,13 +169,10 @@ const listOfBooking = async (req, res, next) => {
         as: 'country_info',
       },
     },
-
     {
       $unwind: '$country_info',
     },
-
     { $addFields: { state_id: { $toObjectId: '$address_info.state_id' } } },
-
     {
       $lookup: {
         from: 'states',
@@ -170,13 +181,10 @@ const listOfBooking = async (req, res, next) => {
         as: 'state_info',
       },
     },
-
     {
       $unwind: '$state_info',
     },
-
     { $addFields: { city_id: { $toObjectId: '$address_info.city_id' } } },
-
     {
       $lookup: {
         from: 'cities',
@@ -185,11 +193,9 @@ const listOfBooking = async (req, res, next) => {
         as: 'city_info',
       },
     },
-
     {
       $unwind: '$city_info',
     },
-
     {
       $project: {
         event_date: 1,
@@ -201,7 +207,18 @@ const listOfBooking = async (req, res, next) => {
         },
         event_info: {
           _id: '$event_info._id',
-          name: '$event_info.event_name',
+          event_name: '$event_info.event_name',
+          event_description: '$event_info.event_description',
+        },
+        event_image: {
+          _id: '$event_image._id',
+          event_image: '$event_image.event_image',
+        },
+        service_info: {
+          _id: '$service_info._id',
+          service_name: '$service_info.service_name',
+          price: '$service_info.price',
+          service_description: '$service_info.service_description',
         },
         address_info: {
           _id: '$address_info._id',
@@ -259,7 +276,9 @@ const deleteBooking = async (req, res, next) => {
   const findBooking = await bookingModel.findById(bookingId);
 
   if (findBooking) {
-    const deleteBooking = await bookingModel.findByIdAndDelete(bookingId);
+    const deleteBooking = await bookingModel.findByIdAndUpdate(bookingId, {
+      is_deleted: true,
+    });
 
     if (!deleteBooking) {
       logger.error(`${Messages.FAILED_TO} delete event booking`);
