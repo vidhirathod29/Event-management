@@ -36,32 +36,29 @@ module.exports = {
   }),
 
   updateAddress: Joi.object({
-    address_line1: Joi.string().empty().messages({
+    address_line1: Joi.string().optional().messages({
       'string.base': 'Address line 1 should be type of string',
-      'string.empty': 'Address line 1 should not be empty',
-      'any.required': 'Address line 1 is required',
+      'any.only': 'Address line 1 is optional',
     }),
-    address_line2: Joi.string().empty().messages({
+    address_line2: Joi.string().optional().messages({
       'string.base': 'Address line 2 should be type of string',
-      'string.empty': 'Address line 2 should not be empty',
-      'any.required': 'Address line 2 is required',
+      'any.only': 'Address line 2 is optional',
     }),
-    zip_code: Joi.string().empty().min(5).messages({
+    zip_code: Joi.string().optional().min(5).messages({
       'string.base': 'Zip code should be type of string',
-      'string.empty': 'Zip code should not be empty',
       'string.min': 'Zip code should have at least 5 characters',
-      'any.required': 'Zip code is required',
+      'any.only': 'Zip code is optional',
     }),
   }),
 
   listOfAddress: Joi.object({
-    condition: Joi.object().optional().empty().messages({
+    condition: Joi.object().optional().messages({
       'object.base': 'Condition should be type of an object',
-      'object.empty': 'Condition should not be empty',
+      'object.only': 'Condition is optional',
     }),
-    pageSize: Joi.number().optional().empty().messages({
+    pageSize: Joi.number().optional().messages({
       'number.base': 'pageSize should be type of a number',
-      'number.empty': 'pageSize should not be empty',
+      'number.only': 'pageSize is optional',
     }),
   }),
 };

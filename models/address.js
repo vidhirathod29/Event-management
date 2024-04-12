@@ -30,6 +30,11 @@ const address = mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  is_deleted: {
+    type: Boolean,
+    required: true,
+    default: false,
+  },
 });
 
 const addressModel = new mongoose.model('address', address);

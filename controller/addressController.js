@@ -7,6 +7,7 @@ const { RESPONSE_STATUS } = require('../utils/enum');
 const { Messages } = require('../utils/messages');
 const { GeneralError } = require('../utils/error');
 const { GeneralResponse } = require('../utils/response');
+const mongoose = require('mongoose');
 const logger = require('../logger/logger');
 
 const listOfCountry = async (req, res, next) => {
@@ -166,11 +167,12 @@ const addAddress = async (req, res, next) => {
 const updateAddress = async (req, res, next) => {
   const addressId = req.params.id;
 
-  const findAddress = await addressModel.findById(addressId);
+  const findAddress = await addressModel.findOne(addressId, {
+    is_deleted: false,
+  });
 
   if (findAddress) {
     const {
-      user_id,
       country_id,
       state_id,
       city_id,
@@ -180,7 +182,6 @@ const updateAddress = async (req, res, next) => {
     } = req.body;
 
     const updateAddress = {
-      user_id,
       country_id,
       state_id,
       city_id,
@@ -233,7 +234,9 @@ const deleteAddress = async (req, res, next) => {
   const findAddress = await addressModel.findById(addressId);
 
   if (findAddress) {
-    const deleteAddress = await addressModel.findByIdAndDelete(addressId);
+    const deleteAddress = await addressModel.findByIdAndUpdate(addressId, {
+      is_deleted: true,
+    });
     if (!deleteAddress) {
       logger.error(`${Messages.FAILED_TO} delete address`);
       next(
@@ -269,9 +272,11 @@ const deleteAddress = async (req, res, next) => {
 
 const listOfAddress = async (req, res, next) => {
   const { condition, pageSize } = req.body;
+  if (condition) {
+    condition._id = new mongoose.Types.ObjectId(condition._id);
+  }
   const pipeline = [
-    { $match: { condition } },
-
+    { $match: { ...condition, is_deleted: false } },
     {
       $set: {
         user_id: { $toObjectId: '$user_id' },
@@ -280,16 +285,6 @@ const listOfAddress = async (req, res, next) => {
         city_id: { $toObjectId: '$city_id' },
       },
     },
-
-    {
-      $lookup: {
-        from: 'users',
-        localField: 'user_id',
-        foreignField: '_id',
-        as: 'user_info',
-      },
-    },
-
     {
       $lookup: {
         from: 'countries',
@@ -297,6 +292,9 @@ const listOfAddress = async (req, res, next) => {
         foreignField: '_id',
         as: 'country_info',
       },
+    },
+    {
+      $unwind: '$country_info',
     },
     {
       $lookup: {
@@ -307,6 +305,9 @@ const listOfAddress = async (req, res, next) => {
       },
     },
     {
+      $unwind: '$state_info',
+    },
+    {
       $lookup: {
         from: 'cities',
         localField: 'city_id',
@@ -314,19 +315,19 @@ const listOfAddress = async (req, res, next) => {
         as: 'city_info',
       },
     },
-
-    {
-      $unwind: '$user_info',
-    },
-
-    {
-      $unwind: '$country_info',
-    },
-    {
-      $unwind: '$state_info',
-    },
     {
       $unwind: '$city_info',
+    },
+    {
+      $lookup: {
+        from: 'users',
+        localField: 'user_id',
+        foreignField: '_id',
+        as: 'user_info',
+      },
+    },
+    {
+      $unwind: '$user_info',
     },
 
     {
