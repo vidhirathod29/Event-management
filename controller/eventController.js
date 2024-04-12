@@ -5,6 +5,7 @@ const { RESPONSE_STATUS } = require('../utils/enum');
 const { GeneralResponse } = require('../utils/response');
 const { Messages } = require('../utils/messages');
 const { GeneralError } = require('../utils/error');
+const mongoose = require('mongoose');
 const logger = require('../logger/logger');
 
 const addEvent = async (req, res, next) => {
@@ -154,12 +155,17 @@ const deleteEvent = async (req, res, next) => {
 
 const listOfEvent = async (req, res, next) => {
   const { condition, pageSize } = req.body;
+  if (condition) {
+    condition._id = new mongoose.Types.ObjectId(condition._id);
+  }
+
   const pipeline = [
     { $match: { ...condition, is_deleted: false } },
 
     {
       $set: {
         user_id: { $toObjectId: '$user_id' },
+        event_manage_id: { $toObjectId: '$event_manage_id' },
       },
     },
 
@@ -175,14 +181,41 @@ const listOfEvent = async (req, res, next) => {
     {
       $unwind: '$user_info',
     },
-
+    { $addFields: { _id: { $toString: '$_id' } } },
+    {
+      $lookup: {
+        from: 'event_images',
+        localField: '_id',
+        foreignField: 'event_manage_id',
+        as: 'event_image',
+      },
+    },
+    {
+      $lookup: {
+        from: 'services',
+        localField: '_id',
+        foreignField: 'event_manage_id',
+        as: 'service_info',
+      },
+    },
     {
       $project: {
         event_name: 1,
         event_description: 1,
+        event_image: {
+          _id: '$event_image._id',
+          event_image: '$event_image.event_image',
+        },
         user_info: {
           _id: '$user_info._id',
           name: '$user_info.name',
+          email: '$user_info.email',
+        },
+        service_info: {
+          _id: '$service_info._id',
+          service_name: '$service_info.service_name',
+          price: '$service_info.price',
+          service_description: '$service_info.service_description',
         },
       },
     },
