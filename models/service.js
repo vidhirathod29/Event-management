@@ -24,6 +24,11 @@ const service = mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  is_deleted: {
+    type: Boolean,
+    required: true,
+    default: false,
+  },
 });
 
 const serviceModel = new mongoose.model('service', service);

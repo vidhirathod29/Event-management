@@ -5,6 +5,7 @@ const { GeneralResponse } = require('../utils/response');
 const { Messages } = require('../utils/messages');
 const { GeneralError } = require('../utils/error');
 const logger = require('../logger/logger');
+const mongoose = require('mongoose');
 
 const addService = async (req, res, next) => {
   const userId = req.user.id;
@@ -21,32 +22,23 @@ const addService = async (req, res, next) => {
 
   const addedService = await newService.save();
 
-  if (addedService) {
-    logger.info(`Event service ${Messages.ADD_SUCCESS}`);
-    next(
-      new GeneralResponse(
-        `Event service ${Messages.ADD_SUCCESS}`,
-        StatusCodes.OK,
-        addedService.id,
-        RESPONSE_STATUS.SUCCESS,
-      ),
-    );
-  } else {
-    logger.error(Messages.SOMETHING_WENT_WRONG);
-    next(
-      new GeneralError(
-        Messages.SOMETHING_WENT_WRONG,
-        StatusCodes.BAD_REQUEST,
-        undefined,
-        RESPONSE_STATUS.ERROR,
-      ),
-    );
-  }
+  logger.info(`Event service ${Messages.ADD_SUCCESS}`);
+  next(
+    new GeneralResponse(
+      `Event service ${Messages.ADD_SUCCESS}`,
+      StatusCodes.OK,
+      addedService.id,
+      RESPONSE_STATUS.SUCCESS,
+    ),
+  );
 };
 
 const updateService = async (req, res, next) => {
   const serviceId = req.params.id;
-  const findService = await serviceModel.find(serviceId);
+  const findService = await serviceModel.findOne({
+    _id: serviceId,
+    is_deleted: false,
+  });
 
   if (findService) {
     const { service_name, price, service_description } = req.body;
@@ -96,9 +88,11 @@ const deleteService = async (req, res, next) => {
   const findService = await serviceModel.findById(serviceId);
 
   if (findService) {
-    const deleteEvent = await serviceModel.findByIdAndDelete(serviceId);
+    const deleteService = await serviceModel.findByIdAndUpdate(serviceId, {
+      is_deleted: true,
+    });
 
-    if (!deleteEvent) {
+    if (!deleteService) {
       logger.error(`${Messages.FAILED_TO} delete event service`);
       next(
         new GeneralError(
@@ -133,16 +127,17 @@ const deleteService = async (req, res, next) => {
 
 const listOfService = async (req, res, next) => {
   const { condition, pageSize } = req.body;
+  if (condition) {
+    condition._id = new mongoose.Types.ObjectId(condition._id);
+  }
   const pipeline = [
-    { $match: { condition } },
-
+    { $match: { ...condition, is_deleted: false } },
     {
       $set: {
         user_id: { $toObjectId: '$user_id' },
         event_manage_id: { $toObjectId: '$event_manage_id' },
       },
     },
-
     {
       $lookup: {
         from: 'users',
@@ -151,7 +146,9 @@ const listOfService = async (req, res, next) => {
         as: 'user_info',
       },
     },
-
+    {
+      $unwind: '$user_info',
+    },
     {
       $lookup: {
         from: 'events',
@@ -160,15 +157,18 @@ const listOfService = async (req, res, next) => {
         as: 'event_info',
       },
     },
-
-    {
-      $unwind: '$user_info',
-    },
-
     {
       $unwind: '$event_info',
     },
-
+    { $addFields: { _id: { $toString: '$_id' } } },
+    {
+      $lookup: {
+        from: 'event_images',
+        localField: '_id',
+        foreignField: 'event_manage_id',
+        as: 'event_image',
+      },
+    },
     {
       $project: {
         service_name: 1,
@@ -181,6 +181,10 @@ const listOfService = async (req, res, next) => {
         event_info: {
           _id: '$event_info._id',
           name: '$event_info.event_name',
+        },
+        event_image: {
+          _id: '$event_image._id',
+          event_image: '$event_image.event_image',
         },
       },
     },
