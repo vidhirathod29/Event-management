@@ -27,28 +27,21 @@ module.exports = {
   updateService: Joi.object({
     service_name: Joi.string().optional().messages({
       'string.base': 'Service name should be type of String ',
-      'any.only': 'Service name is optional',
     }),
     price: Joi.number().optional().messages({
       'number.base': 'Price should be type of number ',
-      'any.only': 'Price is optional',
     }),
     service_description: Joi.string().optional().messages({
       'string.base': 'Service description should be type of String ',
-      'any.only': 'Service description is optional',
     }),
   }),
 
   listOfService: Joi.object({
     condition: Joi.object().optional().messages({
       'object.base': 'Condition should be type of an object',
-      'object.empty': 'Condition should not be empty',
-      'any.only': 'Condition is optional',
     }),
     pageSize: Joi.number().optional().messages({
       'number.base': 'pageSize should be type of a number',
-      'number.empty': 'pageSize should not be empty',
-      'any.only': 'Page size is optional',
     }),
   }),
 };
