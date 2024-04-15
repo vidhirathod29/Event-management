@@ -32,29 +32,21 @@ module.exports = {
   updateBooking: Joi.object({
     event_date: Joi.date().optional().messages({
       'date.base': 'Event date should be type of date',
-      'date.empty': 'Event date should not be empty',
-      'any.only': 'Event date is optional',
     }),
     additional_information: Joi.string().optional().messages({
       'string.base': 'Additional information should be type of string',
-      'string.empty': 'Additional information should not be empty',
-      'any.only': 'Additional information is optional',
     }),
     status: Joi.string().optional().messages({
       'string.base': 'Status should be type of string',
-      'string.empty': 'Status should not be empty',
-      'any.only': 'Status is optional',
     }),
   }),
 
   listOfBooking: Joi.object({
     condition: Joi.object().optional().messages({
       'object.base': 'Condition should be type of an object',
-      'object.only': 'Condition is optional',
     }),
     pageSize: Joi.number().optional().messages({
       'number.base': 'pageSize should be type of a number',
-      'number.only': 'pageSize is optional',
     }),
   }),
 };
