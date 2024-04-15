@@ -14,6 +14,9 @@ module.exports = {
     FAILED_TO: 'Failed to ',
     DATABASE_CONNECTION: 'Database connected successfully',
     NO_DATABASE_CONNECTION: 'Could not connect to the database',
+    USER_UNAUTHORIZED: 'You are unauthorized to perform this action',
+    DELETE_SUCCESS: 'is deleted successfully',
+    ADD_SUCCESS: 'added successfully',
     INTERNAL_SERVER_ERROR: 'Internal server error',
     RESET_PASS_SUCCESS: 'Password reset successfully',
     INVALID_OLD_PASS: 'Invalid old password',
@@ -21,7 +24,5 @@ module.exports = {
     OTP_GENERATE_FAIL: 'Failed to generate otp',
     OTP_EXPIRE: 'Otp is expired',
     INVALID_OTP: 'Please enter a valid otp',
-    ADD_SUCCESS: 'added successfully',
-    DELETE_SUCCESS: 'deleted successfully',
   },
 };
