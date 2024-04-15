@@ -94,7 +94,12 @@ const login = async (req, res, next) => {
   const comparePassword = await bcrypt.compare(password, user.password);
 
   if (comparePassword) {
-    let token = generateToken({ email, password });
+    let token = generateToken({
+      email,
+      password,
+      role: user.role,
+      id: user.id,
+    });
     logger.info(Messages.LOGIN_SUCCESS);
     next(
       new GeneralError(
