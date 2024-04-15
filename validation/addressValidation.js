@@ -38,27 +38,22 @@ module.exports = {
   updateAddress: Joi.object({
     address_line1: Joi.string().optional().messages({
       'string.base': 'Address line 1 should be type of string',
-      'any.only': 'Address line 1 is optional',
     }),
     address_line2: Joi.string().optional().messages({
       'string.base': 'Address line 2 should be type of string',
-      'any.only': 'Address line 2 is optional',
     }),
     zip_code: Joi.string().optional().min(5).messages({
       'string.base': 'Zip code should be type of string',
       'string.min': 'Zip code should have at least 5 characters',
-      'any.only': 'Zip code is optional',
     }),
   }),
 
   listOfAddress: Joi.object({
     condition: Joi.object().optional().messages({
       'object.base': 'Condition should be type of an object',
-      'object.only': 'Condition is optional',
     }),
     pageSize: Joi.number().optional().messages({
       'number.base': 'pageSize should be type of a number',
-      'number.only': 'pageSize is optional',
     }),
   }),
 };
