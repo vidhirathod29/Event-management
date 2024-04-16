@@ -20,21 +20,21 @@ router.get('/listOfState', errorHandler(listOfState));
 router.get('/listOfCity', errorHandler(listOfCity));
 router.post(
   '/addAddress',
-  authorization([ROLES.ADMIN, ROLES.ORGANIZATION, ROLES.USER]),
+  authorization([ROLES.USER]),
   validator.body(validate.addAddress),
   errorHandler(addAddress),
 );
 
 router.put(
   '/updateAddress/:id',
-  authorization([ROLES.ADMIN, ROLES.ORGANIZATION]),
+  authorization([ROLES.USER]),
   validator.body(validate.updateAddress),
   errorHandler(updateAddress),
 );
 
 router.delete(
   '/deleteAddress/:id',
-  authorization([ROLES.ADMIN, ROLES.ORGANIZATION]),
+  authorization([ROLES.USER]),
   errorHandler(deleteAddress),
 );
 
