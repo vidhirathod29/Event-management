@@ -56,7 +56,7 @@ const errorHandler = (check) => {
     try {
       await check(req, res, next);
     } catch (error) {
-      logger.error(error)
+      logger.error(error);
       next(
         new GeneralError(
           Messages.INTERNAL_SERVER_ERROR,
