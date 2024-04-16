@@ -14,14 +14,14 @@ const { ROLES } = require('../utils/enum');
 
 router.post(
   '/addBooking',
-  authorization([ROLES.ADMIN, ROLES.ORGANIZATION]),
+  authorization([ROLES.USER]),
   validator.body(validate.addBooking),
   errorHandler(addBooking),
 );
 
 router.put(
   '/editBooking/:id',
-  authorization([ROLES.ADMIN, ROLES.ORGANIZATION]),
+  authorization([ROLES.USER]),
   validator.body(validate.updateBooking),
   errorHandler(updateBooking),
 );
@@ -35,7 +35,7 @@ router.post(
 
 router.delete(
   '/deleteBooking/:id',
-  authorization([ROLES.ADMIN, ROLES.ORGANIZATION]),
+  authorization([ROLES.USER]),
   errorHandler(deleteBooking),
 );
 

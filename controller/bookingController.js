@@ -273,7 +273,9 @@ const listOfBooking = async (req, res, next) => {
 const deleteBooking = async (req, res, next) => {
   const bookingId = req.params.id;
 
-  const findBooking = await bookingModel.findById(bookingId);
+  const findBooking = await bookingModel.findById(bookingId, {
+    is_deleted: false,
+  });
 
   if (findBooking) {
     const deleteBooking = await bookingModel.findByIdAndUpdate(bookingId, {
