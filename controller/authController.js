@@ -109,16 +109,17 @@ const login = async (req, res, next) => {
         RESPONSE_STATUS.SUCCESS,
       ),
     );
+  } else {
+    logger.error(Messages.INCORRECT_CREDENTIAL);
+    next(
+      new GeneralError(
+        Messages.INCORRECT_CREDENTIAL,
+        StatusCodes.UNAUTHORIZED,
+        undefined,
+        RESPONSE_STATUS.ERROR,
+      ),
+    );
   }
-  logger.error(Messages.INCORRECT_CREDENTIAL);
-  next(
-    new GeneralError(
-      Messages.INCORRECT_CREDENTIAL,
-      StatusCodes.UNAUTHORIZED,
-      undefined,
-      RESPONSE_STATUS.ERROR,
-    ),
-  );
 };
 
 const updateProfile = async (req, res, next) => {
