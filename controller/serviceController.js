@@ -85,7 +85,9 @@ const updateService = async (req, res, next) => {
 
 const deleteService = async (req, res, next) => {
   const serviceId = req.params.id;
-  const findService = await serviceModel.findById(serviceId);
+  const findService = await serviceModel.findById(serviceId, {
+    is_deleted: false,
+  });
 
   if (findService) {
     const deleteService = await serviceModel.findByIdAndUpdate(serviceId, {
