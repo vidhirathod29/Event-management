@@ -14,6 +14,7 @@ module.exports = {
     FAILED_TO: 'Failed to ',
     DATABASE_CONNECTION: 'Database connected successfully',
     NO_DATABASE_CONNECTION: 'Could not connect to the database',
+    INTERNAL_SERVER_ERROR: 'Internal server error',
     ADD_SUCCESS:'added successfully',
     USER_UNAUTHORIZED: 'You are unauthorized to perform this action',
     DELETE_SUCCESS: 'is deleted successfully',
