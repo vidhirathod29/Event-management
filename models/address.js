@@ -1,25 +1,26 @@
 const mongoose = require('mongoose');
-const { STATUS } = require('../utils/enum');
 
-const booking = new mongoose.Schema({
+const address = mongoose.Schema({
   user_id: {
     type: String,
   },
-  address_id: {
+  country_id: {
     type: String,
   },
-  event_manage_id: {
+  state_id: {
     type: String,
   },
-  event_date: {
-    type: Date,
-  },
-  additional_information: {
+  city_id: {
     type: String,
   },
-  status: {
+  address_line1: {
     type: String,
-    enum: [STATUS.PENDING, STATUS.CANCELLED, STATUS.APPROVED],
+  },
+  address_line2: {
+    type: String,
+  },
+  zip_code: {
+    type: String,
   },
   created_at: {
     type: Date,
@@ -36,7 +37,8 @@ const booking = new mongoose.Schema({
   },
 });
 
-const bookingModel = mongoose.model('booking', booking);
+const addressModel = new mongoose.model('address', address);
+
 module.exports = {
-  bookingModel,
+  addressModel,
 };
