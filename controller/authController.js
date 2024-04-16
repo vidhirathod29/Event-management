@@ -94,7 +94,12 @@ const login = async (req, res, next) => {
   const comparePassword = await bcrypt.compare(password, user.password);
 
   if (comparePassword) {
-    let token = generateToken({ email, password });
+    let token = generateToken({
+      email,
+      password,
+      role: user.role,
+      id: user.id,
+    });
     logger.info(Messages.LOGIN_SUCCESS);
     next(
       new GeneralError(
@@ -104,16 +109,17 @@ const login = async (req, res, next) => {
         RESPONSE_STATUS.SUCCESS,
       ),
     );
+  } else {
+    logger.error(Messages.INCORRECT_CREDENTIAL);
+    next(
+      new GeneralError(
+        Messages.INCORRECT_CREDENTIAL,
+        StatusCodes.UNAUTHORIZED,
+        undefined,
+        RESPONSE_STATUS.ERROR,
+      ),
+    );
   }
-  logger.error(Messages.INCORRECT_CREDENTIAL);
-  next(
-    new GeneralError(
-      Messages.INCORRECT_CREDENTIAL,
-      StatusCodes.UNAUTHORIZED,
-      undefined,
-      RESPONSE_STATUS.ERROR,
-    ),
-  );
 };
 
 const updateProfile = async (req, res, next) => {
