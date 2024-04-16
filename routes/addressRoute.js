@@ -20,7 +20,7 @@ router.get('/listOfState', errorHandler(listOfState));
 router.get('/listOfCity', errorHandler(listOfCity));
 router.post(
   '/addAddress',
-  authorization([ROLES.ADMIN, ROLES.ORGANIZATION]),
+  authorization([ROLES.ADMIN, ROLES.ORGANIZATION, ROLES.USER]),
   validator.body(validate.addAddress),
   errorHandler(addAddress),
 );
