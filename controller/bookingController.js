@@ -42,7 +42,9 @@ const addBooking = async (req, res, next) => {
 const updateBooking = async (req, res, next) => {
   const bookingId = req.params.id;
 
-  const findBooking = await bookingModel.findById(bookingId);
+  const findBooking = await bookingModel.findById(bookingId, {
+    is_deleted: false,
+  });
   if (findBooking) {
     const { event_date, additional_information, status } = req.body;
 
@@ -126,10 +128,14 @@ const listOfBooking = async (req, res, next) => {
 const deleteBooking = async (req, res, next) => {
   const bookingId = req.params.id;
 
-  const findBooking = await bookingModel.findById(bookingId);
+  const findBooking = await bookingModel.findById(bookingId, {
+    is_deleted: false,
+  });
 
   if (findBooking) {
-    const deleteBooking = await bookingModel.findByIdAndDelete(bookingId);
+    const deleteBooking = await bookingModel.findByIdAndUpdate(bookingId, {
+      is_deleted: true,
+    });
 
     if (!deleteBooking) {
       logger.error(`${Messages.FAILED_TO} delete event booking`);
