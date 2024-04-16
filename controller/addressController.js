@@ -231,7 +231,9 @@ const updateAddress = async (req, res, next) => {
 const deleteAddress = async (req, res, next) => {
   const addressId = req.params.id;
 
-  const findAddress = await addressModel.findById(addressId);
+  const findAddress = await addressModel.findById(addressId, {
+    is_deleted: false,
+  });
 
   if (findAddress) {
     const deleteAddress = await addressModel.findByIdAndUpdate(addressId, {
