@@ -14,14 +14,15 @@ module.exports = {
     FAILED_TO: 'Failed to ',
     DATABASE_CONNECTION: 'Database connected successfully',
     NO_DATABASE_CONNECTION: 'Could not connect to the database',
-    ADD_SUCCESS: 'added successfully',
     INTERNAL_SERVER_ERROR: 'Internal server error',
+    ADD_SUCCESS:'added successfully',
+    USER_UNAUTHORIZED: 'You are unauthorized to perform this action',
+    DELETE_SUCCESS: 'is deleted successfully',
     RESET_PASS_SUCCESS: 'Password reset successfully',
     INVALID_OLD_PASS: 'Invalid old password',
     OTP_SENT_SUCCESS: 'Otp sent successfully',
     OTP_GENERATE_FAIL: 'Failed to generate otp',
     OTP_EXPIRE: 'Otp is expired',
     INVALID_OTP: 'Please enter a valid otp',
-    DELETE_SUCCESS:'deleted successfully'
   },
 };
