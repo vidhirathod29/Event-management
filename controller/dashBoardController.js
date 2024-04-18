@@ -255,10 +255,12 @@ const countOfBookingStatus = async (req, res, next) => {
       $sort: { count: 1 },
     },
   ]);
+
   const totalCountOfStatus = countOfStatus.reduce((status, data) => {
     status[data._id] = data.count;
     return status;
   }, {});
+
   logger.info(`Count of Booking Status ${Messages.GET_SUCCESS}`);
   next(
     new GeneralError(
@@ -283,6 +285,7 @@ const countOfTotalUser = async (req, res, next) => {
     },
     { $unwind: '$_id' },
   ]);
+
   const totalCountOfUser = countOfUser.reduce((user, data) => {
     user[data._id] = data.count;
     return user;
@@ -370,8 +373,7 @@ const graphOfUser = async (req, res, next) => {
         },
       },
     );
-  } 
-  else if (type == 'monthly') {
+  } else if (type == 'monthly') {
     pipeline.push(
       {
         $group: {
@@ -391,8 +393,7 @@ const graphOfUser = async (req, res, next) => {
         },
       },
     );
-  } 
-  else if (type == 'yearly') {
+  } else if (type == 'yearly') {
     pipeline.push(
       {
         $group: {
@@ -410,8 +411,7 @@ const graphOfUser = async (req, res, next) => {
         },
       },
     );
-  } 
-  else {
+  } else {
     logger.error(`Type ${Messages.NOT_FOUND}`);
     next(
       new GeneralError(
