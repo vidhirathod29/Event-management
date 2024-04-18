@@ -350,7 +350,8 @@ const graphOfUser = async (req, res, next) => {
     const today = currentDate.getDay();
     const weekStart = new Date(currentDate);
     const sevenDayPrevious = new Date(currentDate);
-    weekEnd.setDate(currentDate.getDate() + (today - 7));
+    weekStart.setDate(currentDate.getDate() - (today - 1));
+    sevenDayPrevious.setDate(currentDate.getDate() - 7); 
     dateRange = { $gte: sevenDayPrevious, $lte: weekStart };
     pipeline.push(
       {
@@ -376,7 +377,7 @@ const graphOfUser = async (req, res, next) => {
         },
       },
     );
-  } else if (type == 'monthly') {
+  }  else if (type == 'monthly') {
     pipeline.push(
       {
         $group: {
