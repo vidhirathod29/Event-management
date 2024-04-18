@@ -257,7 +257,7 @@ const countOfBookingStatus = async (req, res, next) => {
       $sort: { count: 1 },
     },
   ]);
-  
+
   const totalCountOfStatus = countOfStatus.reduce((status, data) => {
     status[data._id] = data.count;
     return status;
@@ -351,7 +351,7 @@ const graphOfUser = async (req, res, next) => {
     const weekStart = new Date(currentDate);
     const sevenDayPrevious = new Date(currentDate);
     weekStart.setDate(currentDate.getDate() - (today - 1));
-    sevenDayPrevious.setDate(currentDate.getDate() - 7); 
+    sevenDayPrevious.setDate(currentDate.getDate() - 7);
     dateRange = { $gte: sevenDayPrevious, $lte: weekStart };
     pipeline.push(
       {
@@ -377,7 +377,7 @@ const graphOfUser = async (req, res, next) => {
         },
       },
     );
-  }  else if (type == 'monthly') {
+  } else if (type == 'monthly') {
     pipeline.push(
       {
         $group: {
