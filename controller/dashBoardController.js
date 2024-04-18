@@ -62,6 +62,7 @@ const listOfLatestEvent = async (req, res, next) => {
       },
     },
   ]);
+
   logger.info(`Latest list of events ${Messages.GET_SUCCESS}`);
   next(
     new GeneralError(
@@ -227,6 +228,7 @@ const listOfLatestBooking = async (req, res, next) => {
       },
     },
   ]);
+
   logger.info(`Latest list of bookings ${Messages.GET_SUCCESS}`);
   next(
     new GeneralError(
@@ -255,7 +257,7 @@ const countOfBookingStatus = async (req, res, next) => {
       $sort: { count: 1 },
     },
   ]);
-
+  
   const totalCountOfStatus = countOfStatus.reduce((status, data) => {
     status[data._id] = data.count;
     return status;
@@ -320,6 +322,7 @@ const countOfTotalEvent = async (req, res, next) => {
     },
     { $unwind: '$_id' },
   ]);
+
   const totalCountOfEvent = countOfEvent.reduce((event, data) => {
     event[data._id] = data.count;
     return event;
