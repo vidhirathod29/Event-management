@@ -1,9 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const { eventReport, bookingReport } = require('../controller/reportController');
+const {
+  eventReport,
+  bookingReport,
+} = require('../controller/reportController');
 const { errorHandler } = require('../helper/error');
 const { validator } = require('../validation/validator');
-const {reportValidation} = require('../validation/reportValidation');
+const { reportValidation } = require('../validation/reportValidation');
 const { authorization } = require('../middleware/authentication');
 const { ROLES } = require('../utils/enum');
 
